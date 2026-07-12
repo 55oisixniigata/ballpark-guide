@@ -1,0 +1,42 @@
+{
+ "updated": "2026-07-12T12:00:00+09:00",
+ "date": "7/2",
+ "game": {
+  "dateLabel": "2026年7月2日（木）",
+  "crown": "",
+  "opponent": "千葉ロッテマリーンズ",
+  "venue": "悠久山",
+  "venueRaw": "長岡市悠久山野球場",
+  "weather": "曇一時雨／30・21℃",
+  "start": "13:00",
+  "ticketSaleStart": "10:45",
+  "openFanclub1": "10:00",
+  "openFanclub2": "11:00",
+  "openGeneral": "11:30",
+  "parking": "第1・2・5・6駐車場",
+  "shuttleBus": "なし",
+  "smoking": "禁煙（球場内に喫煙所はありません）",
+  "ticketPrice": "平日価格：大人1,200円／子供500円",
+  "goods": "入場ゲート付近で販売中。取扱商品は当日ブースにてご確認ください。",
+  "food": "球団キッチンカーが出店中。メニュー詳細は当日キッチンカーにてご確認ください。",
+  "infoDesk": "2回表終了後 越後製菓イベント引き換え／5回裏終了後 カラーボール引き換え（対象会員は後援会特典も）",
+  "alphaKun": false,
+  "promos": {
+   "fureai": false,
+   "kirikomi": false,
+   "present": true,
+   "kuji100": true,
+   "kattara": true,
+   "miokuri": true
+  },
+  "notice": ""
+ },
+ "events": [
+  {
+   "title": "ゴスペルステージ（ジョイフルスプリングゴスペルクワイア）",
+   "place": "入場口",
+   "time": "12:00〜12:30",
+   "phase": "試合前"
+  }
+ ]
+}

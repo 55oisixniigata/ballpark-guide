@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>球場ガイド｜オイシックス新潟アルビレックスBC</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&display=swap');
+:root{
+  --orange:#f39800;
+  --orange-dark:#e07f00;
+  --orange-bg:#fff1da;
+  --gold:#ffc247;
+  --navy:#1f2b52;
+  --navy-soft:#4a5580;
+  --bg:#fff8ec;
+  --card:#ffffff;
+  --line:#f3e2c4;
+  --muted:#a1937c;
+  --green:#2fae72;
+  --green-bg:#e0f6ea;
+  --pink:#ff5c86;
+  --pink-bg:#ffe3ea;
+  --purple:#8b6fd1;
+  --purple-bg:#ede6fb;
+  --teal:#2f9bc9;
+  --teal-bg:#e2f4fa;
+  --gray-badge:#f0ece2;
+  --pop-shadow:0 4px 0 rgba(31,43,82,.08);
+}
+/* フォント：iOS/macはヒラギノ丸ゴ、Android等はWebフォントのM PLUS Rounded 1cで
+   丸ゴシックに統一。Webフォント失敗時も明朝には落ちない構成 */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Hiragino Maru Gothic ProN','M PLUS Rounded 1c','Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic Medium',Meiryo,sans-serif;
+  background-color:var(--bg);
+  background-image:radial-gradient(rgba(243,152,0,.08) 1.5px,transparent 1.5px);
+  background-size:22px 22px;
+  color:var(--navy);
+  max-width:480px;
+  margin:0 auto;
+  padding-bottom:44px;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+svg{display:block}
+
+/* ===== 最上部の帯 ===== */
+.topbar{
+  background:repeating-linear-gradient(-45deg,var(--orange) 0 14px,var(--orange-dark) 14px 28px);
+  color:#fff;text-align:center;
+  font-size:.62rem;font-weight:900;letter-spacing:.32em;
+  padding:6px 0 5px;text-indent:.32em;
+  text-shadow:0 1px 2px rgba(0,0,0,.18);
+}
+
+/* ===== ヒーロー（スコアボード風） ===== */
+.hero{
+  position:relative;
+  background:linear-gradient(165deg,var(--navy) 0%,#2c3a68 78%,#33427a 100%);
+  color:#fff;
+  padding:18px 18px 30px;
+  overflow:hidden;
+}
+.hero-deco{position:absolute;top:-20px;right:-20px;width:150px;height:150px;opacity:.09;color:#fff;fill:#fff}
+.hero-deco2{position:absolute;bottom:-6px;left:-16px;width:90px;height:90px;opacity:.08;color:#fff;fill:#fff}
+.hero-kicker{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:.6rem;font-weight:900;letter-spacing:.3em;text-indent:.3em;
+  color:var(--gold);margin-bottom:10px;position:relative;z-index:1;
+}
+.hero-kicker::before,.hero-kicker::after{content:"";flex:0 0 26px;height:2px;background:var(--gold);border-radius:2px;opacity:.7}
+.hero-top{display:flex;justify-content:center;gap:8px;font-size:.7rem;margin-bottom:14px;position:relative;z-index:1;flex-wrap:wrap}
+.hero-top>span{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.13);padding:5px 12px;border-radius:20px;font-weight:800}
+.hero-top>span svg{width:12px;height:12px;fill:#fff;opacity:.85}
+.matchup{
+  display:flex;align-items:center;gap:8px;position:relative;z-index:1;
+  background:rgba(255,255,255,.07);
+  border:1.5px solid rgba(255,255,255,.16);
+  border-radius:18px;padding:14px 10px;
+}
+.team{flex:1;text-align:center;font-weight:900;font-size:1.02rem;line-height:1.42}
+.team small{display:block;font-size:.56rem;font-weight:800;letter-spacing:.22em;text-indent:.22em;opacity:.75;margin-bottom:4px}
+.team.home small{color:var(--gold)}
+.vs{
+  font-size:.74rem;font-weight:900;color:var(--navy);
+  background:linear-gradient(150deg,var(--gold) 0%,var(--orange) 70%);
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 3px 0 rgba(0,0,0,.28);
+  transform:rotate(-6deg);
+}
+.hero-meta{display:flex;justify-content:center;gap:9px;font-size:.74rem;margin-top:14px;flex-wrap:wrap;position:relative;z-index:1}
+.hero-meta>span{display:flex;align-items:center;gap:6px;background:var(--orange);color:#fff;padding:7px 14px;border-radius:20px;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.22)}
+.hero-meta>span svg{width:14px;height:14px;fill:#fff}
+
+.hero-updated{text-align:center;font-size:.68rem;font-weight:800;color:rgba(255,255,255,.7);margin-top:11px;position:relative;z-index:1;letter-spacing:.05em}
+
+/* ガーランド（三角旗） */
+.garland{width:100%;height:26px;display:block;margin-top:-1px}
+
+/* ===== クイックメニュー ===== */
+.quicknav{
+  display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px 4px;
+}
+.qn{
+  flex-shrink:0;display:flex;align-items:center;gap:6px;
+  font-size:.7rem;font-weight:900;color:#fff;
+  padding:7px 14px;border-radius:20px;
+  box-shadow:var(--pop-shadow);
+}
+.qn svg{width:12px;height:12px;fill:#fff}
+.qn.navy{background:var(--navy)} .qn.pink{background:var(--pink)}
+.qn.orange{background:var(--orange)} .qn.purple{background:var(--purple)}
+.qn.teal{background:var(--teal)} .qn.green{background:var(--green)}
+
+/* ===== 写真スロット（共通：ストライプ＋点線枠で「ここに写真」が一目瞭然） ===== */
+.photo-slot{
+  position:relative;width:100%;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+  color:#fff;
+}
+.photo-slot::before{
+  content:"";position:absolute;inset:7px;border:2px dashed rgba(255,255,255,.65);
+  border-radius:12px;pointer-events:none;
+}
+.photo-slot svg.cam{width:30px;height:30px;fill:#fff;opacity:.95}
+.photo-slot .ph-label{
+  font-size:.66rem;font-weight:900;
+  background:rgba(255,255,255,.92);padding:4px 13px;border-radius:20px;
+  position:relative;z-index:1;
+}
+.photo-slot.sunset{background:repeating-linear-gradient(-45deg,#ffb03a 0 16px,#f39800 16px 32px)}
+.photo-slot.sunset .ph-label{color:var(--orange-dark)}
+.photo-slot.berry{background:repeating-linear-gradient(-45deg,#ff7a9d 0 16px,#ff5c86 16px 32px)}
+.photo-slot.berry .ph-label{color:var(--pink)}
+.photo-slot.grape{background:repeating-linear-gradient(-45deg,#a68ae0 0 16px,#8b6fd1 16px 32px)}
+.photo-slot.grape .ph-label{color:var(--purple)}
+
+/* PICK UP ヒーロー写真 */
+.section{padding:18px 16px 2px}
+.photo-hero{aspect-ratio:16/9;border-radius:20px;box-shadow:var(--pop-shadow)}
+.pickup-tag{
+  position:absolute;top:-9px;left:14px;z-index:2;
+  background:var(--navy);color:var(--gold);
+  font-weight:900;font-size:.64rem;letter-spacing:.12em;text-indent:.12em;
+  padding:5px 14px;border-radius:20px;
+  box-shadow:0 3px 0 rgba(31,43,82,.25);
+  transform:rotate(-2deg);
+}
+.photo-hero-wrap{position:relative}
+
+/* ===== セクション見出し（スタンプ風バッジ＋背景に英字） ===== */
+.sec-head{position:relative;margin:4px 0 14px;min-height:40px}
+.sec-en{
+  position:absolute;right:0;top:2px;
+  font-size:1.5rem;font-weight:900;letter-spacing:.04em;
+  opacity:.16;line-height:1;user-select:none;
+}
+.sec-badge{
+  position:relative;z-index:1;
+  display:inline-flex;align-items:center;gap:9px;
+  color:#fff;font-weight:900;font-size:.9rem;
+  padding:8px 18px 8px 8px;border-radius:30px;
+  transform:rotate(-1.4deg);
+}
+.icon-circle{
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(255,255,255,.28);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sec-badge svg{width:15px;height:15px;fill:#fff;color:#fff}
+.sec-badge.navy{background:var(--navy);box-shadow:3px 4px 0 rgba(31,43,82,.18)}
+.sec-badge.pink{background:var(--pink);box-shadow:3px 4px 0 rgba(255,92,134,.28)}
+.sec-badge.orange{background:var(--orange);box-shadow:3px 4px 0 rgba(224,127,0,.28)}
+.sec-badge.purple{background:var(--purple);box-shadow:3px 4px 0 rgba(139,111,209,.3)}
+.sec-badge.teal{background:var(--teal);box-shadow:3px 4px 0 rgba(47,155,201,.28)}
+.sec-badge.green{background:var(--green);box-shadow:3px 4px 0 rgba(47,174,114,.28)}
+.sec-en.navy{color:var(--navy)} .sec-en.pink{color:var(--pink)}
+.sec-en.orange{color:var(--orange-dark)} .sec-en.purple{color:var(--purple)}
+.sec-en.teal{color:var(--teal)} .sec-en.green{color:var(--green)}
+
+.card{
+  background:var(--card);
+  border:2px solid var(--line);
+  border-radius:22px;
+  padding:16px 18px;
+  margin-bottom:10px;
+  box-shadow:var(--pop-shadow);
+}
+
+/* ===== 来場前に（チケット半券風） ===== */
+.ticket-card{padding:0;overflow:hidden}
+.ticket-head{
+  background:repeating-linear-gradient(-45deg,rgba(255,255,255,.06) 0 10px,transparent 10px 20px),var(--navy);
+  color:#fff;font-size:.66rem;font-weight:900;letter-spacing:.18em;text-indent:.18em;
+  text-align:center;padding:8px 0;
+}
+.ticket-body{padding:16px 18px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info-label{font-size:.68rem;color:var(--muted);font-weight:800;letter-spacing:.03em;margin-bottom:3px}
+.info-value{font-size:.84rem;font-weight:800}
+.info-value.big{font-size:1.3rem;color:var(--orange-dark);line-height:1.2}
+.info-value.big small{font-size:.66rem;color:var(--muted);font-weight:800;margin-left:2px}
+.info-item.full{grid-column:1/-1}
+.punch-row{display:flex;align-items:center;margin:15px -18px}
+.punch{width:13px;height:26px;background:var(--bg);border:2px solid var(--line);flex-shrink:0}
+.punch.l{border-radius:0 26px 26px 0;border-left:none}
+.punch.r{border-radius:26px 0 0 26px;border-right:none}
+.punch-line{flex:1;border-top:2px dashed var(--line)}
+
+/* ===== グッズ・飲食 ===== */
+.stall-photo{aspect-ratio:16/9;border-radius:14px;margin-bottom:12px}
+.stall-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+.stall-name{font-weight:900;font-size:.95rem}
+.stall-note{font-size:.8rem;color:var(--muted);line-height:1.7;font-weight:600}
+.badge{
+  display:inline-block;font-size:.67rem;font-weight:900;
+  padding:4px 12px;border-radius:20px;
+}
+.badge.update{background:var(--gray-badge);color:var(--navy-soft)}
+.badge.open{background:var(--green);color:#fff;box-shadow:0 2px 0 rgba(47,174,114,.35)}
+
+/* ===== 特別イベント ===== */
+.event-photo{aspect-ratio:21/9;border-radius:14px;margin-bottom:14px}
+.timeline-item{display:flex;gap:13px}
+.timeline-time{
+  font-weight:900;color:#fff;font-size:.72rem;
+  background:var(--purple);
+  min-width:60px;height:48px;border-radius:14px 14px 14px 4px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  line-height:1.25;flex-shrink:0;
+  box-shadow:0 3px 0 rgba(139,111,209,.35);
+}
+.timeline-body{flex:1;padding-top:2px}
+.timeline-title{font-weight:900;font-size:.9rem;line-height:1.5}
+.timeline-sub{font-size:.74rem;color:var(--muted);margin-top:3px;font-weight:700}
+.timeline-place{
+  display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:900;
+  background:var(--purple-bg);color:var(--purple);
+  padding:4px 11px;border-radius:20px;margin-top:8px;
+}
+.timeline-place svg{width:10px;height:10px;fill:var(--purple)}
+
+/* ===== 試合中の企画（スコアボード風 ON/OFF） ===== */
+.today-count{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.68rem;font-weight:900;color:var(--teal);
+  background:var(--teal-bg);border-radius:20px;padding:5px 13px;margin-bottom:12px;
+}
+.today-count svg{width:12px;height:12px;fill:var(--teal)}
+.event-list{display:flex;flex-direction:column;gap:7px}
+.event-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:14px;
+}
+.event-row.on{background:var(--teal-bg);border:1.5px solid #c4e7f4}
+.event-row.off{background:var(--bg);border:1.5px dashed var(--line)}
+.event-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.event-row.on .event-dot{background:var(--teal);box-shadow:0 0 0 3px rgba(47,155,201,.2)}
+.event-row.off .event-dot{background:#d9d2c2}
+.event-name{flex:1;font-size:.8rem;font-weight:800;line-height:1.5}
+.event-row.off .event-name{color:var(--muted);font-weight:600}
+.event-status{font-size:.64rem;font-weight:900;padding:4px 11px;border-radius:20px;flex-shrink:0}
+.event-row.on .event-status{background:var(--teal);color:#fff;box-shadow:0 2px 0 rgba(47,155,201,.35)}
+.event-row.off .event-status{background:transparent;color:var(--muted);border:1.5px solid var(--gray-badge)}
+.event-note{
+  font-size:.72rem;color:var(--muted);background:var(--bg);
+  border-radius:12px;padding:10px 13px;margin-top:12px;line-height:1.7;font-weight:600;
+}
+
+/* ===== 総合案内所（引き換えステップ） ===== */
+.exchange-item{display:flex;gap:11px;padding:10px 0;align-items:flex-start}
+.exchange-item + .exchange-item{border-top:2px dashed var(--line)}
+.exchange-num{
+  background:var(--green);color:#fff;font-weight:900;font-size:.7rem;
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;
+  box-shadow:0 2px 0 rgba(47,174,114,.35);
+}
+.exchange-body{flex:1}
+.exchange-when{
+  display:inline-block;font-size:.62rem;font-weight:900;
+  background:var(--green-bg);color:var(--green);
+  padding:3px 10px;border-radius:20px;margin-bottom:4px;
+}
+.exchange-what{font-size:.84rem;font-weight:800;line-height:1.5}
+
+
+
+/* ===== 球場マップ（エコスタ開催時のみ表示） ===== */
+.map-card{padding:14px 12px 16px}
+.map-svg{width:100%;height:auto;display:block}
+.map-cond{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.66rem;font-weight:900;color:var(--teal);
+  background:var(--teal-bg);border-radius:20px;padding:5px 13px;margin-bottom:10px;
+}
+.map-cond svg{width:11px;height:11px;fill:var(--teal)}
+.map-legend{display:flex;flex-direction:column;gap:9px;margin-top:14px;padding:0 6px}
+.legend-row{display:flex;align-items:center;gap:10px}
+.legend-pin{
+  width:24px;height:24px;border-radius:50% 50% 50% 6px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:.7rem;font-weight:900;flex-shrink:0;
+  transform:rotate(-45deg);box-shadow:0 2px 0 rgba(31,43,82,.15);
+}
+.legend-pin span{transform:rotate(45deg)}
+.legend-pin.pink{background:var(--pink)}
+.legend-pin.orange{background:var(--orange)}
+.legend-pin.green{background:var(--green)}
+.legend-name{font-weight:900;font-size:.84rem}
+.legend-note{font-size:.7rem;color:var(--muted);font-weight:700;margin-left:auto;text-align:right}
+
+/* ===== 本日のタイムライン（A案：縦一本） ===== */
+.tl{position:relative}
+.tl::before{content:"";position:absolute;left:33px;top:10px;bottom:10px;border-left:2.5px dashed var(--line)}
+.tl-phase{display:flex;align-items:center;gap:10px;margin:18px 0 10px;position:relative;z-index:1}
+.tl-phase:first-child{margin-top:0}
+.tl-phase span{font-size:.74rem;font-weight:900;color:#fff;background:var(--navy);padding:6px 18px;border-radius:20px;letter-spacing:.14em;text-indent:.14em;box-shadow:0 2px 0 rgba(31,43,82,.2)}
+.tl-phase::after{content:"";flex:1;border-top:2px dashed var(--line)}
+.tl-item{display:flex;gap:12px;padding:7px 0;position:relative;z-index:1;align-items:flex-start}
+.tl-chip{
+  min-width:66px;max-width:66px;min-height:44px;border-radius:13px 13px 13px 4px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#fff;font-weight:900;font-size:.72rem;line-height:1.3;text-align:center;flex-shrink:0;padding:5px 2px;
+}
+.tl-chip small{font-size:.56rem;font-weight:900;opacity:.9}
+.tl-chip.time{background:var(--purple);box-shadow:0 3px 0 rgba(139,111,209,.35)}
+.tl-chip.start{background:linear-gradient(150deg,var(--gold) 0%,var(--orange) 70%);color:var(--navy);box-shadow:0 3px 0 rgba(224,127,0,.35)}
+.tl-chip.inning{background:var(--teal);box-shadow:0 3px 0 rgba(47,155,201,.35)}
+.tl-chip.always{background:var(--orange);box-shadow:0 3px 0 rgba(224,127,0,.35)}
+.tl-chip.after{background:var(--green);box-shadow:0 3px 0 rgba(47,174,114,.35)}
+.tl-body{flex:1;padding-top:3px}
+.tl-title{font-weight:900;font-size:.88rem;line-height:1.5}
+.tl-sub{font-size:.73rem;color:var(--muted);font-weight:700;margin-top:2px;line-height:1.6}
+.tl-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.tl-tag{display:inline-flex;align-items:center;gap:4px;font-size:.64rem;font-weight:900;padding:4px 11px;border-radius:20px}
+.tl-tag svg{width:9px;height:9px}
+.tl-tag.place{background:var(--gray-badge);color:var(--navy-soft)}
+.tl-tag.place svg{fill:var(--navy-soft)}
+.tl-tag.stage{background:var(--purple-bg);color:var(--purple)}
+.tl-tag.gift{background:var(--green-bg);color:var(--green)}
+.tl-tag.present{background:var(--teal-bg);color:var(--teal)}
+.tl-tag.kikaku{background:var(--orange-bg);color:var(--orange-dark)}
+
+/* ===== フッター ===== */
+.footer-note{
+  background:var(--orange-bg);color:var(--orange-dark);font-weight:800;
+  border:2px dashed var(--orange);
+  border-radius:16px;padding:12px 16px;margin:22px 16px 0;font-size:.73rem;line-height:1.8;
+}
+footer{
+  text-align:center;font-size:.7rem;color:var(--muted);
+  padding:24px 16px 8px;line-height:1.9;font-weight:600;
+}
+footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- SVGアイコン定義（絵文字は不使用。統一ラインアイコンで演出） -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+  <symbol id="ic-ticket" viewBox="0 0 24 24"><path d="M2 9a2 2 0 012-2h16a2 2 0 012 2v1.2a1.8 1.8 0 000 3.6V15a2 2 0 01-2 2H4a2 2 0 01-2-2v-1.2a1.8 1.8 0 000-3.6V9z"/><line x1="12" y1="7" x2="12" y2="17" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2.2 2.2"/></symbol>
+  <symbol id="ic-bag" viewBox="0 0 24 24"><path d="M9 8V6.5a3 3 0 016 0V8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5.5 8h13l1 12.5H4.5L5.5 8z"/></symbol>
+  <symbol id="ic-bowl" viewBox="0 0 24 24"><path d="M3 12h18a9 9 0 01-18 0z"/><path d="M9 5.5v2M12 4v2.5M15 5.5v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="ic-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17.5" x2="12" y2="21.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8.5" y1="21.5" x2="15.5" y2="21.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.6 1.3 6.6L12 17.2l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.7L12 2.5z"/></symbol>
+  <symbol id="ic-gift" viewBox="0 0 24 24"><rect x="3.5" y="10.5" width="17" height="9.5" rx="1.2"/><rect x="2.5" y="7" width="19" height="4" rx="1"/><rect x="10.7" y="7" width="2.6" height="13"/><path d="M12 7c-1-3.3-6.2-3.6-6.2-.7 0 2.1 3.3 1 6.2.7zm0 0c1-3.3 6.2-3.6 6.2-.7 0 2.1-3.3 1-6.2.7z" fill="none" stroke="#fff" stroke-width="1.1"/></symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 00-7-7zm0 9.6A2.6 2.6 0 1112 6.4a2.6 2.6 0 010 5.2z"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5.3l3.5 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="ic-cloud" viewBox="0 0 24 24"><path d="M7 18a4 4 0 01-.5-8A5 5 0 0116 8.5a4.4 4.4 0 011.5 8.5z"/></symbol>
+  <symbol id="ic-cam" viewBox="0 0 24 24"><path d="M8.2 6.5L9.6 4.4h4.8l1.4 2.1H20a1.5 1.5 0 011.5 1.5v9.6A1.5 1.5 0 0120 19H4a1.5 1.5 0 01-1.5-1.5V8A1.5 1.5 0 014 6.5h4.2z"/><circle cx="12" cy="13" r="3.4" fill="none" stroke="#fff8ec" stroke-width="1.4"/></symbol>
+  <symbol id="ic-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M8 3.3c-2.3 3.6-2.3 13.8 0 17.4M16 3.3c2.3 3.6 2.3 13.8 0 17.4" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol>
+  <symbol id="ic-confetti" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1.6"/><circle cx="19" cy="9" r="1.2"/><circle cx="16" cy="4" r="1"/><rect x="3" y="15" width="2.6" height="2.6" transform="rotate(20 4 16)"/><rect x="17" y="16" width="2.6" height="2.6" transform="rotate(-15 18 17)"/></symbol>
+  <symbol id="ic-megaphone" viewBox="0 0 24 24"><path d="M3 10v4a1.5 1.5 0 001.5 1.5H7l9 4.5a1 1 0 001.5-.9V4.9A1 1 0 0016 4l-9 4.5H4.5A1.5 1.5 0 003 10z"/><path d="M20 9.5a3.5 3.5 0 010 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</defs>
+</svg>
+
+<div class="topbar">BALLPARK GUIDE</div>
+
+<!-- ヒーロー：スコアボード風 -->
+<div class="hero">
+  <svg class="hero-deco"><use href="#ic-ball"/></svg>
+  <svg class="hero-deco2"><use href="#ic-confetti"/></svg>
+  <div class="hero-kicker" id="kicker">GAME DAY</div>
+  <div class="hero-top">
+    <span id="chip-date">読み込み中…</span>
+    <span id="chip-weather" style="display:none"></span>
+  </div>
+  <div class="matchup">
+    <span class="team home"><small>HOME</small>オイシックス新潟<br>アルビレックスBC</span>
+    <span class="vs">VS</span>
+    <span class="team away"><small>VISITOR</small><span id="away-name">—</span></span>
+  </div>
+  <div class="hero-meta">
+    <span><svg><use href="#ic-pin"/></svg><span id="venue-name">—</span></span>
+    <span><svg><use href="#ic-clock"/></svg>試合開始&nbsp;<span id="start-time">—</span></span>
+  </div>
+  <div class="hero-updated" id="updated"></div>
+</div>
+
+<!-- ガーランド（三角旗の飾り） -->
+<svg class="garland" viewBox="0 0 480 26" preserveAspectRatio="none" aria-hidden="true">
+  <line x1="0" y1="1.5" x2="480" y2="1.5" stroke="#1f2b52" stroke-width="3"/>
+  <polygon points="0,2 20,24 40,2"    fill="#f39800"/>
+  <polygon points="40,2 60,24 80,2"   fill="#ffc247"/>
+  <polygon points="80,2 100,24 120,2" fill="#ff5c86"/>
+  <polygon points="120,2 140,24 160,2" fill="#2f9bc9"/>
+  <polygon points="160,2 180,24 200,2" fill="#f39800"/>
+  <polygon points="200,2 220,24 240,2" fill="#8b6fd1"/>
+  <polygon points="240,2 260,24 280,2" fill="#ffc247"/>
+  <polygon points="280,2 300,24 320,2" fill="#2fae72"/>
+  <polygon points="320,2 340,24 360,2" fill="#f39800"/>
+  <polygon points="360,2 380,24 400,2" fill="#ff5c86"/>
+  <polygon points="400,2 420,24 440,2" fill="#2f9bc9"/>
+  <polygon points="440,2 460,24 480,2" fill="#ffc247"/>
+</svg>
+
+<!-- クイックメニュー（タップで各コーナーへ） -->
+<nav class="quicknav">
+  <a class="qn navy" href="#info"><svg><use href="#ic-ticket"/></svg>来場前に</a>
+  <a class="qn pink" href="#goods"><svg><use href="#ic-bag"/></svg>グッズ</a>
+  <a class="qn orange" href="#food"><svg><use href="#ic-bowl"/></svg>飲食</a>
+  <a class="qn teal" href="#map" id="nav-map"><svg><use href="#ic-pin"/></svg>マップ</a>
+  <a class="qn purple" href="#timeline"><svg><use href="#ic-clock"/></svg>タイムライン</a>
+</nav>
+
+<div class="footer-note" id="err" style="display:none;margin:14px 16px 0">情報を取得できませんでした。最新情報は球団SNS・公式サイトをご確認ください。</div>
+
+<!-- PICK UP フォト -->
+<div class="section">
+  <div class="photo-hero-wrap">
+    <span class="pickup-tag">PICK UP</span>
+    <div class="photo-slot photo-hero sunset">
+      <svg class="cam"><use href="#ic-cam"/></svg>
+      <span class="ph-label">本日の注目シーン・写真はここに掲載</span>
+    </div>
+  </div>
+</div>
+
+<!-- 来場前にチェック -->
+<div class="section" id="info">
+  <div class="sec-head">
+    <span class="sec-en navy">CHECK!</span>
+    <div class="sec-badge navy"><span class="icon-circle"><svg><use href="#ic-ticket"/></svg></span>来場前にチェック</div>
+  </div>
+  <div class="card ticket-card">
+    <div class="ticket-head">GAME DAY TICKET INFO</div>
+    <div class="ticket-body">
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">開場（一般）</div>
+          <div class="info-value big" id="v-open">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">チケット販売開始</div>
+          <div class="info-value big" id="v-sale">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">後援会先行（OD・D会員）</div>
+          <div class="info-value" id="v-fan1">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">後援会先行</div>
+          <div class="info-value" id="v-fan2">—</div>
+        </div>
+        <div class="info-item full">
+          <div class="info-label">チケット料金</div>
+          <div class="info-value" id="v-price">—</div>
+        </div>
+      </div>
+      <div class="punch-row">
+        <span class="punch l"></span><span class="punch-line"></span><span class="punch r"></span>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">駐車場</div>
+          <div class="info-value" id="v-parking">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">臨時バス</div>
+          <div class="info-value" id="v-bus">—</div>
+        </div>
+        <div class="info-item full">
+          <div class="info-label">喫煙所</div>
+          <div class="info-value" id="v-smoking">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- グッズ -->
+<div class="section" id="goods">
+  <div class="sec-head">
+    <span class="sec-en pink">GOODS</span>
+    <div class="sec-badge pink"><span class="icon-circle"><svg><use href="#ic-bag"/></svg></span>グッズ</div>
+  </div>
+  <div class="card">
+    <div class="photo-slot stall-photo berry">
+      <svg class="cam"><use href="#ic-cam"/></svg>
+      <span class="ph-label">グッズ写真スペース</span>
+    </div>
+    <div class="stall-head">
+      <span class="stall-name">グッズ販売ブース</span>
+      <span class="badge update">詳細情報 更新中</span>
+    </div>
+    <div class="stall-note" id="goods-note">入場ゲート付近で販売中。取扱商品は当日ブースにてご確認ください。</div>
+  </div>
+</div>
+
+<!-- 飲食 -->
+<div class="section" id="food">
+  <div class="sec-head">
+    <span class="sec-en orange">FOOD</span>
+    <div class="sec-badge orange"><span class="icon-circle"><svg><use href="#ic-bowl"/></svg></span>飲食</div>
+  </div>
+  <div class="card">
+    <div class="photo-slot stall-photo sunset">
+      <svg class="cam"><use href="#ic-cam"/></svg>
+      <span class="ph-label">キッチンカー写真スペース</span>
+    </div>
+    <div class="stall-head">
+      <span class="stall-name">球団キッチンカー</span>
+      <span class="badge open">本日 出店あり</span>
+    </div>
+    <div class="stall-note" id="food-note">球場内で出店中。メニュー詳細は当日キッチンカーにてご確認ください。</div>
+  </div>
+</div>
+
+<!-- 球場マップ（エコスタ開催時のみ表示） -->
+<div class="section" id="map">
+  <div class="sec-head">
+    <span class="sec-en teal">MAP</span>
+    <div class="sec-badge teal"><span class="icon-circle"><svg><use href="#ic-pin"/></svg></span>球場マップ</div>
+  </div>
+  <div class="card map-card">
+    <span class="map-cond"><svg><use href="#ic-pin"/></svg>HARD OFF ECOスタジアム新潟</span>
+    <svg class="map-svg" viewBox="0 0 360 322" xmlns="http://www.w3.org/2000/svg" aria-label="球場マップ">
+      <!-- スタンド外周 -->
+      <ellipse cx="180" cy="145" rx="149" ry="127" fill="#dde3f0" stroke="#1f2b52" stroke-width="3"/>
+      <!-- コンコース（白いリング） -->
+      <ellipse cx="180" cy="145" rx="132" ry="111" fill="#ffffff"/>
+      <!-- 内側スタンド -->
+      <ellipse cx="180" cy="145" rx="113" ry="94" fill="#c6cfe6"/>
+      <!-- 外野芝生 -->
+      <path d="M180,232 L96,138 A113 94 0 0 1 264,138 Z" fill="#8ed07f"/>
+      <!-- 内野ダート -->
+      <path d="M180,240 L134,196 A62 62 0 0 1 226,196 Z" fill="#eec98c"/>
+      <!-- ダイヤモンド -->
+      <polygon points="180,232 214,199 180,166 146,199" fill="#9bd88c"/>
+      <line x1="180" y1="232" x2="214" y2="199" stroke="#fff" stroke-width="2.5"/>
+      <line x1="180" y1="232" x2="146" y2="199" stroke="#fff" stroke-width="2.5"/>
+      <line x1="214" y1="199" x2="180" y2="166" stroke="#fff" stroke-width="2.5"/>
+      <line x1="146" y1="199" x2="180" y2="166" stroke="#fff" stroke-width="2.5"/>
+      <circle cx="180" cy="199" r="7" fill="#eec98c"/>
+      <rect x="176.5" y="228" width="7" height="7" rx="1.5" fill="#fff" transform="rotate(45 180 231.5)"/>
+      <!-- スコアボード -->
+      <rect x="146" y="30" width="68" height="18" rx="5" fill="#1f2b52"/>
+      <rect x="152" y="35" width="26" height="8" rx="2" fill="#ffc247"/>
+      <rect x="182" y="35" width="26" height="8" rx="2" fill="#5fc0e8"/>
+      <!-- エリアラベル -->
+      <text x="60" y="158" text-anchor="middle" font-size="10" font-weight="800" fill="#4a5580" opacity=".8">三塁側</text>
+      <text x="300" y="158" text-anchor="middle" font-size="10" font-weight="800" fill="#4a5580" opacity=".8">一塁側</text>
+      <!-- 入場口（下部の切り欠き） -->
+      <rect x="160" y="252" width="40" height="24" rx="6" fill="#fff8ec" stroke="#1f2b52" stroke-width="2.5"/>
+      <polygon points="180,284 173,292 187,292" fill="#1f2b52"/>
+      <rect x="139" y="292" width="82" height="24" rx="12" fill="#1f2b52"/>
+      <text x="180" y="308.5" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">入場口</text>
+      <!-- ピン①グッズ（一塁側コンコース） -->
+      <g transform="translate(272,200)">
+        <path d="M0 20 C-11 8 -14 1 -14 -5 A14 14 0 1 1 14 -5 C14 1 11 8 0 20 Z" fill="#ff5c86" stroke="#fff" stroke-width="2.5"/>
+        <text x="0" y="0" text-anchor="middle" font-size="13" font-weight="900" fill="#fff">1</text>
+      </g>
+      <!-- ピン②キッチンカー（三塁側コンコース） -->
+      <g transform="translate(88,200)">
+        <path d="M0 20 C-11 8 -14 1 -14 -5 A14 14 0 1 1 14 -5 C14 1 11 8 0 20 Z" fill="#f39800" stroke="#fff" stroke-width="2.5"/>
+        <text x="0" y="0" text-anchor="middle" font-size="13" font-weight="900" fill="#fff">2</text>
+      </g>
+      <!-- ピン③総合案内所（入場口そば） -->
+      <g transform="translate(140,242)">
+        <path d="M0 20 C-11 8 -14 1 -14 -5 A14 14 0 1 1 14 -5 C14 1 11 8 0 20 Z" fill="#2fae72" stroke="#fff" stroke-width="2.5"/>
+        <text x="0" y="0" text-anchor="middle" font-size="13" font-weight="900" fill="#fff">3</text>
+      </g>
+    </svg>
+    <div class="map-legend">
+      <div class="legend-row">
+        <span class="legend-pin pink"><span>1</span></span>
+        <span class="legend-name">グッズ販売ブース</span>
+        <span class="legend-note">入場ゲート付近</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-pin orange"><span>2</span></span>
+        <span class="legend-name">キッチンカー</span>
+        <span class="legend-note">本日 出店あり</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-pin green"><span>3</span></span>
+        <span class="legend-name">総合案内所</span>
+        <span class="legend-note">各種引き換えはこちら</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 本日のタイムライン（A案：縦一本） -->
+<div class="section" id="timeline">
+  <div class="sec-head">
+    <span class="sec-en purple">TIMELINE</span>
+    <div class="sec-badge purple"><span class="icon-circle"><svg><use href="#ic-clock"/></svg></span>本日のタイムライン</div>
+  </div>
+  <div class="card">
+    <div class="tl" id="tl"></div>
+    <div class="event-note" id="tl-note"></div>
+  </div>
+</div>
+
+<div class="footer-note" id="notice" style="display:none"></div>
+
+<footer>
+  <svg class="ball" viewBox="0 0 24 24"><use href="#ic-ball"/></svg>
+  オイシックス新潟アルビレックスBC 球場ガイド<br>
+  情報は変更になる場合があります。最新情報は球団SNS・公式サイトをご確認ください。
+</footer>
+
+
+<script>
+const DATA_URL = 'data.json';
+const VENUE_NAMES = { 'エコスタ': 'HARD OFF ECOスタジアム新潟', '悠久山': '長岡市悠久山野球場' };
+
+function esc(s){ return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function minutesOf(s){ const m = String(s || '').match(/(\d{1,2}):(\d{2})/); return m ? (+m[1]) * 60 + (+m[2]) : null; }
+function setText(id, v){ const el = document.getElementById(id); if (el) el.textContent = v || '—'; }
+
+/* 時間表記をチップの上下2段に分割（例: "2回表終了後"→[2回表, 終了後]） */
+function splitChip(time){
+  const s = String(time || '').trim();
+  if (!s) return ['時間未定', ''];
+  let m = s.match(/^(\d{1,2}:\d{2})\s*[〜~－-]\s*(\d{1,2}:\d{2})$/);
+  if (m) return [m[1], '〜' + m[2]];
+  m = s.match(/^(.{2,4}?)(終了後|終了時|開始前)$/);
+  if (m) return [m[1], m[2]];
+  if (s.length <= 5) return [s, ''];
+  return [s.slice(0, 5), s.slice(5)];
+}
+
+function itemHtml(it){
+  const small = it.small ? '<small>' + esc(it.small) + '</small>' : '';
+  const sub = it.sub ? '<div class="tl-sub">' + esc(it.sub) + '</div>' : '';
+  const tags = (it.tags && it.tags.length) ? '<div class="tl-tags">' + it.tags.join('') + '</div>' : '';
+  return '<div class="tl-item"><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
+         '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + '</div></div>';
+}
+function placeTag(p){ return '<span class="tl-tag place"><svg><use href="#ic-pin"/></svg>' + esc(p) + '</span>'; }
+
+function buildTimeline(g, events){
+  const pre = [], mid = [], post = [];
+  if (g.openFanclub1) pre.push({ t: g.openFanclub1, cls: 'time', main: g.openFanclub1, title: '後援会先行入場（OD・D会員）' });
+  if (g.ticketSaleStart) pre.push({ t: g.ticketSaleStart, cls: 'time', main: g.ticketSaleStart, title: 'チケット販売開始', sub: g.ticketPrice });
+  if (g.openFanclub2) pre.push({ t: g.openFanclub2, cls: 'time', main: g.openFanclub2, title: '後援会先行入場' });
+  if (g.openGeneral) pre.push({ t: g.openGeneral, cls: 'time', main: g.openGeneral, title: '一般開場', sub: 'グッズ・キッチンカーも順次オープン' });
+
+  (events || []).forEach(function(ev){
+    const parts = splitChip(ev.time);
+    const item = { t: ev.time, cls: 'time', main: parts[0], small: parts[1], title: ev.title, tags: ev.place ? [placeTag(ev.place)] : [] };
+    if (ev.phase === '試合中') { item.cls = 'inning'; mid.push(item); }
+    else if (ev.phase === '常時') { item.cls = 'always'; if (!String(ev.time || '').trim()) { item.main = '常時'; item.small = ''; } mid.push(item); }
+    else if (ev.phase === '試合後') { item.cls = 'after'; if (!String(ev.time || '').trim()) { item.main = '試合後'; item.small = ''; } post.push(item); }
+    else pre.push(item);
+  });
+
+  if (g.start) pre.push({ t: g.start, cls: 'start', main: g.start, title: 'プレイボール！', last: true });
+
+  const p = g.promos || {};
+  if (p.fureai) mid.push({ cls: 'inning', main: '試合中', title: 'ふれあいタイム' });
+  if (p.kirikomi) mid.push({ cls: 'inning', main: '試合中', title: '切り込みアナウンサー' });
+  if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'プレゼント企画' });
+  if (p.kuji100) mid.push({ cls: 'always', main: '常時', title: '100円くじ販売', tags: ['<span class="tl-tag kikaku">場内企画</span>'] });
+  if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画' });
+  if (p.miokuri) post.push({ cls: 'after', main: '試合後', title: '選手のお見送り', sub: '※ビジターチームの移動時間により短縮または一部選手のみとなる場合があります' });
+
+  pre.sort(function(a, b){
+    if (a.last) return 1;
+    if (b.last) return -1;
+    const am = minutesOf(a.t), bm = minutesOf(b.t);
+    if (am == null && bm == null) return 0;
+    if (am == null) return 1;
+    if (bm == null) return -1;
+    return am - bm;
+  });
+
+  let html = '';
+  [['試合前', pre], ['試合中', mid], ['試合後', post]].forEach(function(pair){
+    if (!pair[1].length) return;
+    html += '<div class="tl-phase"><span>' + pair[0] + '</span></div>';
+    pair[1].forEach(function(it){ html += itemHtml(it); });
+  });
+  document.getElementById('tl').innerHTML = html;
+
+  const off = [];
+  if (!p.fureai) off.push('ふれあいタイム');
+  if (!p.kirikomi) off.push('切り込みアナウンサー');
+  const parts = [];
+  if (off.length) parts.push('本日おやすみの企画：' + off.join('／'));
+  if (g.infoDesk) parts.push('総合案内所・後援会：' + g.infoDesk);
+  const note = document.getElementById('tl-note');
+  if (parts.length) note.innerHTML = parts.map(esc).join('<br>');
+  else note.style.display = 'none';
+}
+
+function render(data){
+  const up = new Date(data.updated);
+  if (!isNaN(up)) {
+    document.getElementById('updated').textContent =
+      '最終更新 ' + (up.getMonth() + 1) + '月' + up.getDate() + '日 ' + up.getHours() + ':' + String(up.getMinutes()).padStart(2, '0');
+  }
+  const g = data.game;
+  if (!g) {
+    const n = document.getElementById('notice');
+    n.style.display = 'block';
+    n.textContent = '次回の試合情報は準備中です。公開までしばらくお待ちください。';
+    document.getElementById('chip-date').textContent = '次回試合 準備中';
+    return;
+  }
+  if (g.crown) document.getElementById('kicker').textContent = g.crown;
+  document.getElementById('chip-date').textContent = g.dateLabel || data.date;
+  if (g.weather) {
+    const w = document.getElementById('chip-weather');
+    w.style.display = '';
+    w.innerHTML = '<svg><use href="#ic-cloud"/></svg>' + esc(g.weather);
+  }
+  document.getElementById('away-name').textContent = g.opponent || '対戦相手未定';
+  document.getElementById('venue-name').textContent = VENUE_NAMES[g.venue] || g.venueRaw || g.venue || '—';
+  document.getElementById('start-time').textContent = g.start || '未定';
+
+  setText('v-open', g.openGeneral);
+  setText('v-sale', g.ticketSaleStart);
+  setText('v-fan1', g.openFanclub1);
+  setText('v-fan2', g.openFanclub2);
+  setText('v-price', g.ticketPrice);
+  setText('v-parking', g.parking);
+  setText('v-bus', g.shuttleBus);
+  setText('v-smoking', g.smoking);
+
+  if (g.goods) document.getElementById('goods-note').textContent = g.goods;
+  if (g.food) document.getElementById('food-note').textContent = g.food;
+
+  if (g.venue !== 'エコスタ') { document.getElementById('map').style.display = 'none'; document.getElementById('nav-map').style.display = 'none'; }
+
+  buildTimeline(g, data.events || []);
+
+  if (g.notice) {
+    const n = document.getElementById('notice');
+    n.style.display = 'block';
+    n.textContent = g.notice;
+  }
+}
+
+(async function(){
+  try {
+    const res = await fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    render(await res.json());
+  } catch (e) {
+    document.getElementById('err').style.display = 'block';
+    document.getElementById('chip-date').textContent = '—';
+  }
+})();
+</script>
+</body>
+</html>
