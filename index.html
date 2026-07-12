@@ -344,6 +344,11 @@ svg{display:block}
 .tl-tag.gift{background:var(--green-bg);color:var(--green)}
 .tl-tag.present{background:var(--teal-bg);color:var(--teal)}
 .tl-tag.kikaku{background:var(--orange-bg);color:var(--orange-dark)}
+.tl-photo{
+  width:100%;aspect-ratio:16/9;object-fit:cover;display:block;
+  border-radius:12px;border:2px solid var(--line);margin-top:9px;
+  box-shadow:var(--pop-shadow);
+}
 
 /* ===== フッター ===== */
 .footer-note{
@@ -651,8 +656,9 @@ function itemHtml(it){
   const small = it.small ? '<small>' + esc(it.small) + '</small>' : '';
   const sub = it.sub ? '<div class="tl-sub">' + esc(it.sub) + '</div>' : '';
   const tags = (it.tags && it.tags.length) ? '<div class="tl-tags">' + it.tags.join('') + '</div>' : '';
+  const photo = it.photo ? '<img class="tl-photo" src="' + esc(it.photo) + '" alt="' + esc(it.title) + '" loading="lazy">' : '';
   return '<div class="tl-item"><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
-         '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + '</div></div>';
+         '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + photo + '</div></div>';
 }
 function placeTag(p){ return '<span class="tl-tag place"><svg><use href="#ic-pin"/></svg>' + esc(p) + '</span>'; }
 
@@ -665,7 +671,7 @@ function buildTimeline(g, events){
 
   (events || []).forEach(function(ev){
     const parts = splitChip(ev.time);
-    const item = { t: ev.time, cls: 'time', main: parts[0], small: parts[1], title: ev.title, tags: ev.place ? [placeTag(ev.place)] : [] };
+    const item = { t: ev.time, cls: 'time', main: parts[0], small: parts[1], title: ev.title, photo: ev.photo, tags: ev.place ? [placeTag(ev.place)] : [] };
     if (ev.phase === '試合中') { item.cls = 'inning'; mid.push(item); }
     else if (ev.phase === '常時') { item.cls = 'always'; if (!String(ev.time || '').trim()) { item.main = '常時'; item.small = ''; } mid.push(item); }
     else if (ev.phase === '試合後') { item.cls = 'after'; if (!String(ev.time || '').trim()) { item.main = '試合後'; item.small = ''; } post.push(item); }
