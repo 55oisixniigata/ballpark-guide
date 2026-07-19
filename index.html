@@ -297,6 +297,20 @@ svg{display:block}
 
 
 
+
+/* ===== スタメンページへの導線バナー ===== */
+.cross-link{
+  display:flex;align-items:center;gap:13px;
+  margin:14px 16px 0;padding:15px 18px;
+  background:linear-gradient(135deg,var(--navy) 0%,#33427a 100%);
+  border-radius:18px;color:#fff;
+  box-shadow:0 4px 0 rgba(31,43,82,.25);
+}
+.cross-link svg{width:26px;height:26px;color:var(--gold);flex-shrink:0}
+.cl-text{flex:1;font-weight:900;font-size:.95rem}
+.cl-text small{display:block;font-size:.58rem;font-weight:900;letter-spacing:.22em;color:var(--gold);margin-bottom:3px}
+.cl-arrow{font-weight:900;font-size:1.15rem;color:var(--gold)}
+
 /* ===== 球場マップ（エコスタ開催時のみ表示） ===== */
 .map-card{padding:14px 12px 16px}
 .map-svg{width:100%;height:auto;display:block}
@@ -442,6 +456,13 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
 </nav>
 
 <div class="footer-note" id="err" style="display:none;margin:14px 16px 0">情報を取得できませんでした。最新情報は球団SNS・公式サイトをご確認ください。</div>
+
+<!-- スタメンページへの導線 -->
+<a class="cross-link" href="https://55oisixniigata.github.io/lineup/lineup.html">
+  <svg><use href="#ic-ball"/></svg>
+  <span class="cl-text"><small>STARTING LINEUP</small>本日のスタメンを見る</span>
+  <span class="cl-arrow">→</span>
+</a>
 
 <!-- PICK UP フォト -->
 <div class="section">
