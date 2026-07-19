@@ -305,6 +305,13 @@ svg{display:block}
 
 
 
+/* ===== 今ここマーカー ===== */
+.now-marker{display:flex;align-items:center;gap:8px;margin:3px 0;position:relative;z-index:1}
+.now-marker .nm-chip{background:var(--pink);color:#fff;font-size:.68rem;font-weight:900;padding:5px 13px;border-radius:20px;box-shadow:0 2px 0 rgba(255,92,134,.35);animation:nmpulse 1.6s ease-in-out infinite}
+.now-marker::after{content:"";flex:1;border-top:2.5px solid var(--pink);opacity:.5}
+@keyframes nmpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.tl-item.done{opacity:.42}
+
 /* ===== スタメンページへの導線バナー ===== */
 .cross-link{
   display:flex;align-items:center;gap:13px;
@@ -695,12 +702,14 @@ function splitChip(time){
   return [s.slice(0, 5), s.slice(5)];
 }
 
-function itemHtml(it){
+function itemHtml(it, phaseKey){
+  const min = minutesOf(it.t);
+  const attrs = ' data-phase="' + (phaseKey || '') + '" data-min="' + (min == null ? '' : min) + '"';
   const small = it.small ? '<small>' + esc(it.small) + '</small>' : '';
   const sub = it.sub ? '<div class="tl-sub">' + esc(it.sub) + '</div>' : '';
   const tags = (it.tags && it.tags.length) ? '<div class="tl-tags">' + it.tags.join('') + '</div>' : '';
   const photo = it.photo ? '<img class="tl-photo" src="' + esc(it.photo) + '" alt="' + esc(it.title) + '" loading="lazy">' : '';
-  return '<div class="tl-item"><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
+  return '<div class="tl-item"' + attrs + '><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
          '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + photo + '</div></div>';
 }
 function placeTag(p){ return '<span class="tl-tag place"><svg><use href="#ic-pin"/></svg>' + esc(p) + '</span>'; }
@@ -742,10 +751,10 @@ function buildTimeline(g, events){
   });
 
   let html = '';
-  [['試合前', pre], ['試合中', mid], ['試合後', post]].forEach(function(pair){
+  [['試合前', pre, 'pre'], ['試合中', mid, 'mid'], ['試合後', post, 'post']].forEach(function(pair){
     if (!pair[1].length) return;
-    html += '<div class="tl-phase"><span>' + pair[0] + '</span></div>';
-    pair[1].forEach(function(it){ html += itemHtml(it); });
+    html += '<div class="tl-phase" data-phase-head="' + pair[2] + '"><span>' + pair[0] + '</span></div>';
+    pair[1].forEach(function(it){ html += itemHtml(it, pair[2]); });
   });
   document.getElementById('tl').innerHTML = html;
 
@@ -759,6 +768,56 @@ function buildTimeline(g, events){
   if (parts.length) note.innerHTML = parts.map(esc).join('<br>');
   else note.style.display = 'none';
 }
+
+let lastGame = null, lastDate = null;
+
+/* 試合当日だけ、現在時刻に合わせて「▶ いまこのへん」を差し込み、終了分を薄くする */
+function applyNowMarker(g, dateStr, nowOverride){
+  if (!g) return;
+  const now = nowOverride || new Date();
+  const todayMd = (now.getMonth() + 1) + '/' + now.getDate();
+  const tl = document.getElementById('tl');
+  tl.querySelectorAll('.now-marker').forEach(function(el){ el.remove(); });
+  tl.querySelectorAll('.tl-item.done').forEach(function(el){ el.classList.remove('done'); });
+  if (dateStr !== todayMd) return; // 試合当日以外は何もしない
+
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const startMin = minutesOf(g.start);
+  const items = Array.prototype.slice.call(tl.querySelectorAll('.tl-item'));
+  let anchor = null, label = '';
+
+  if (startMin != null && nowMin >= startMin) {
+    // 試合中: 試合前パートを全て終了扱いに
+    items.forEach(function(el){ if (el.dataset.phase === 'pre') el.classList.add('done'); });
+    const midHead = tl.querySelector('[data-phase-head="mid"]');
+    if (!midHead) return;
+    anchor = midHead.nextElementSibling;
+    label = 'いま試合中！';
+  } else {
+    // 試合前: 時刻が過ぎた項目を薄くし、次の項目の前にマーカー
+    let lastDone = null;
+    items.forEach(function(el){
+      if (el.dataset.phase !== 'pre' || el.dataset.min === '') return;
+      if (Number(el.dataset.min) <= nowMin) { el.classList.add('done'); lastDone = el; }
+    });
+    if (!lastDone) return; // まだ何も始まっていない日中はマーカーなし
+    anchor = lastDone.nextElementSibling;
+    label = 'いまこのへん';
+  }
+
+  const mk = document.createElement('div');
+  mk.className = 'now-marker';
+  mk.innerHTML = '<span class="nm-chip">▶ ' + label + '</span>';
+  tl.insertBefore(mk, anchor);
+}
+
+// 動作確認用（開発者向け）: コンソールで __testNow('12:30') のように呼ぶと当日扱いで試せる
+window.__testNow = function(hhmm){
+  const m = String(hhmm).match(/(\d{1,2}):(\d{2})/);
+  const d = new Date();
+  if (m) { d.setHours(+m[1], +m[2]); }
+  applyNowMarker(lastGame, (d.getMonth() + 1) + '/' + d.getDate(), d);
+};
 
 function render(data){
   const up = new Date(data.updated);
@@ -801,6 +860,9 @@ function render(data){
   if (g.venue !== 'エコスタ') { document.getElementById('map').style.display = 'none'; document.getElementById('nav-map').style.display = 'none'; }
 
   buildTimeline(g, data.events || []);
+  lastGame = g; lastDate = data.date;
+  applyNowMarker(g, data.date);
+  setInterval(function(){ applyNowMarker(lastGame, lastDate); }, 60000);
 
   if (g.notice) {
     const n = document.getElementById('notice');
