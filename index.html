@@ -396,6 +396,19 @@ svg{display:block}
   box-shadow:var(--pop-shadow);
 }
 
+/* ===== マイクロインタラクション ===== */
+.qn,.cross-link{transition:transform .15s ease}
+.qn:active{transform:scale(.92)}
+.cross-link:active{transform:scale(.97)}
+@media (prefers-reduced-motion: no-preference){
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+  .reveal.in{opacity:1;transform:none}
+  .welcome-mascot{animation:mascot-bob 3.2s ease-in-out infinite}
+  @keyframes mascot-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .garland{transform-origin:top center;animation:garland-sway 6s ease-in-out infinite}
+  @keyframes garland-sway{0%,100%{transform:skewX(0)}50%{transform:skewX(1.1deg)}}
+}
+
 /* ===== フッター ===== */
 .footer-note{
   background:var(--orange-bg);color:var(--orange-dark);font-weight:800;
@@ -879,6 +892,26 @@ function render(data){
     n.style.display = 'block';
     n.textContent = g.notice;
   }
+}
+
+// スクロールに合わせてカードをふわっと表示（動きを減らす設定の端末では無効）
+if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
+  let ioAlive = false;
+  const io = new IntersectionObserver(function(entries){
+    ioAlive = true;
+    entries.forEach(function(e){
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: .12 });
+  const targets = document.querySelectorAll('.section .card, .sec-head, .photo-hero-wrap, .cross-link, .welcome-strip');
+  targets.forEach(function(el){
+    el.classList.add('reveal');
+    io.observe(el);
+  });
+  // 保険: 検知が動かない環境では1.2秒後に全て表示（非表示のまま残さない）
+  setTimeout(function(){
+    if (!ioAlive) targets.forEach(function(el){ el.classList.add('in'); });
+  }, 1200);
 }
 
 (async function(){
