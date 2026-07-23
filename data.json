@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-23T11:12:59+09:00",
+ "updated": "2026-07-23T11:13:42+09:00",
  "date": "7/31",
  "game": {
   "dateLabel": "2026年7月31日（金）",
@@ -27,7 +27,7 @@
    "present": true,
    "kuji100": true,
    "kattara": true,
-   "miokuri": true
+   "miokuri": false
   },
   "notice": ""
  },
