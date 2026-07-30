@@ -162,6 +162,9 @@ svg{display:block}
 .photo-slot.sunset .ph-label{color:var(--orange-dark)}
 .photo-slot.berry{background:repeating-linear-gradient(-45deg,#ff7a9d 0 16px,#ff5c86 16px 32px)}
 .photo-slot.berry .ph-label{color:var(--pink)}
+.photo-slot.has-photo{background:none}
+.photo-slot.has-photo::before{display:none}
+.photo-slot img{width:100%;height:100%;object-fit:cover;display:block}
 .photo-slot.grape{background:repeating-linear-gradient(-45deg,#a68ae0 0 16px,#8b6fd1 16px 32px)}
 .photo-slot.grape .ph-label{color:var(--purple)}
 
@@ -502,14 +505,11 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
 
 <div class="footer-note" id="err" style="display:none;margin:14px 16px 0">情報を取得できませんでした。最新情報は球団SNS・公式サイトをご確認ください。</div>
 
-<!-- PICK UP フォト -->
-<div class="section">
+<!-- PICK UP フォト（写真があるときだけ表示） -->
+<div class="section" id="pickup-section" style="display:none">
   <div class="photo-hero-wrap">
     <span class="pickup-tag">PICK UP</span>
-    <div class="photo-slot photo-hero sunset">
-      <svg class="cam"><use href="#ic-cam"/></svg>
-      <span class="ph-label">本日の注目シーン・写真はここに掲載</span>
-    </div>
+    <div class="photo-slot photo-hero sunset" id="slot-pickup"></div>
   </div>
 </div>
 
@@ -572,10 +572,7 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
     <div class="sec-badge pink"><span class="icon-circle"><svg><use href="#ic-bag"/></svg></span>グッズ</div>
   </div>
   <div class="card">
-    <div class="photo-slot stall-photo berry">
-      <svg class="cam"><use href="#ic-cam"/></svg>
-      <span class="ph-label">グッズ写真スペース</span>
-    </div>
+    <div class="photo-slot stall-photo berry" id="slot-goods" style="display:none"></div>
     <div class="stall-head">
       <span class="stall-name">グッズ販売ブース</span>
       <span class="badge update">詳細情報 更新中</span>
@@ -591,10 +588,7 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
     <div class="sec-badge orange"><span class="icon-circle"><svg><use href="#ic-bowl"/></svg></span>飲食</div>
   </div>
   <div class="card">
-    <div class="photo-slot stall-photo sunset">
-      <svg class="cam"><use href="#ic-cam"/></svg>
-      <span class="ph-label">飲食ブース写真スペース</span>
-    </div>
+    <div class="photo-slot stall-photo sunset" id="slot-food" style="display:none"></div>
     <div class="stall-head">
       <span class="stall-name">飲食ブース</span>
     </div>
@@ -857,6 +851,17 @@ window.__testNow = function(hhmm){
   applyNowMarker(lastGame, (d.getMonth() + 1) + '/' + d.getDate(), d);
 };
 
+/* セクション写真を差し込む（写真が無い枠は非表示のまま） */
+function applyPhoto(slotId, src, alt, sectionId){
+  if (!src) return;
+  const slot = document.getElementById(slotId);
+  if (!slot) return;
+  slot.innerHTML = '<img src="' + esc(src) + '" alt="' + esc(alt) + '" loading="lazy">';
+  slot.classList.add('has-photo');
+  slot.style.display = '';
+  if (sectionId) document.getElementById(sectionId).style.display = '';
+}
+
 function render(data){
   const up = new Date(data.updated);
   if (!isNaN(up)) {
@@ -889,6 +894,11 @@ function render(data){
 
   if (g.goods) document.getElementById('goods-note').textContent = g.goods;
   if (g.food) document.getElementById('food-note').innerHTML = formatFoodText(g.food);
+
+  const ph = g.photos || {};
+  applyPhoto('slot-pickup', ph.pickup, '本日の注目シーン', 'pickup-section');
+  applyPhoto('slot-goods', ph.goods, 'グッズ販売ブース');
+  applyPhoto('slot-food', ph.food, '飲食ブース');
 
   if (!SHOW_MAP || g.venue !== 'エコスタ') setMapVisible(false);
 
