@@ -712,7 +712,12 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
 
 
 <script>
-const DATA_URL = 'data.json';
+/* データと写真は raw.githubusercontent.com から取る。
+   GitHub Pages はビルドとキャッシュで数分かかるが、rawはコミット直後に反映されるため（実測0秒）。
+   万一rawが使えない時のために、Pages側のファイルを予備として使う。 */
+const RAW_BASE = 'https://raw.githubusercontent.com/55oisixniigata/ballpark-guide/main/';
+const DATA_URL = RAW_BASE + 'data.json';
+const DATA_URL_BACKUP = 'data.json';
 const SHOW_MAP = false; // ← 球場マップ。図が完成したら true に戻すと表示される
 const VENUE_NAMES = { 'エコスタ': 'HARD OFF ECOスタジアム新潟', '悠久山': '長岡市悠久山野球場' };
 
@@ -816,7 +821,7 @@ function buildTimeline(g, events){
   document.querySelectorAll('#tl .shots').forEach(initShots);
 }
 
-let lastGame = null, lastDate = null;
+let lastGame = null, lastDate = null, nowMarkerTimer = null;
 
 /* 試合当日だけ、現在時刻に合わせて「▶ いまこのへん」を差し込み、終了分を薄くする */
 function applyNowMarker(g, dateStr, nowOverride){
@@ -869,13 +874,23 @@ window.__testNow = function(hhmm){
 /* 写真のスライドショーHTMLを作る（1枚だけならドットは出ない） */
 function shotsHtml(list, alt){
   const imgs = list.map(function(src, i){
-    return '<img src="' + esc(src) + '" alt="' + esc(alt) + (list.length > 1 ? ' ' + (i+1) : '') +
+    const raw = /^https?:/.test(src) ? src : RAW_BASE + src;
+    return '<img src="' + esc(raw) + '" data-backup="' + esc(src) + '"' +
+           ' onerror="this.onerror=null;this.src=this.dataset.backup"' +
+           ' alt="' + esc(alt) + (list.length > 1 ? ' ' + (i+1) : '') +
            '" loading="' + (i === 0 ? 'eager' : 'lazy') + '">';
   }).join('');
   const dots = list.length > 1
     ? '<div class="shots-dots">' + list.map(function(_, i){ return '<span' + (i === 0 ? ' class="on"' : '') + '></span>'; }).join('') + '</div>'
     : '';
   return '<div class="shots"><div class="shots-track">' + imgs + '</div>' + dots + '</div>';
+}
+
+/* 再描画のたびに自動送りタイマーが増えないよう、まとめて止められるようにする */
+let shotTimers = [];
+function clearShotTimers(){
+  shotTimers.forEach(clearInterval);
+  shotTimers = [];
 }
 
 /* スワイプ・ドット・自動送りを有効にする */
@@ -905,11 +920,11 @@ function initShots(root){
   });
 
   if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
-  setInterval(function(){
+  shotTimers.push(setInterval(function(){
     if (paused || document.hidden) return;
     const next = (indexOfNow() + 1) % dots.length;
     track.scrollTo({ left: next * track.clientWidth, behavior: 'smooth' });
-  }, 4500);
+  }, 4500));
 }
 
 /* セクション写真を差し込む（写真が無い枠は非表示のまま） */
@@ -925,6 +940,7 @@ function applyPhotos(slotId, list, alt, sectionId){
 }
 
 function render(data){
+  clearShotTimers();
   const up = new Date(data.updated);
   if (!isNaN(up)) {
     document.getElementById('updated').textContent =
@@ -969,7 +985,9 @@ function render(data){
   buildTimeline(g, data.events || []);
   lastGame = g; lastDate = data.date;
   applyNowMarker(g, data.date);
-  setInterval(function(){ applyNowMarker(lastGame, lastDate); }, 60000);
+  if (!nowMarkerTimer) {
+    nowMarkerTimer = setInterval(function(){ applyNowMarker(lastGame, lastDate); }, 60000);
+  }
 
   if (g.notice) {
     const n = document.getElementById('notice');
@@ -1009,16 +1027,39 @@ function setMapVisible(show){
 }
 if (!SHOW_MAP) setMapVisible(false); // データ取得を待たずに隠す
 
-(async function(){
-  try {
-    const res = await fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    render(await res.json());
-  } catch (e) {
-    document.getElementById('err').style.display = 'block';
-    document.getElementById('chip-date').textContent = '—';
+/* データを取りに行く（rawがダメならPages側を試す） */
+async function fetchData(){
+  const urls = [DATA_URL, DATA_URL_BACKUP];
+  for (let i = 0; i < urls.length; i++) {
+    try {
+      const res = await fetch(urls[i] + '?t=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) return await res.json();
+    } catch (e) { /* 次を試す */ }
   }
-})();
+  return null;
+}
+
+/* 内容が変わっていたときだけ描き直す */
+let lastUpdated = null;
+async function load(){
+  const data = await fetchData();
+  if (!data) {
+    if (!lastUpdated) { // 一度も表示できていない時だけ知らせる
+      document.getElementById('err').style.display = 'block';
+      document.getElementById('chip-date').textContent = '—';
+    }
+    return;
+  }
+  document.getElementById('err').style.display = 'none';
+  if (data.updated === lastUpdated) return;
+  lastUpdated = data.updated;
+  render(data);
+}
+
+load();
+// ページを開いたままでも最新になるよう、1分ごと＋画面に戻ったときに取り直す
+setInterval(load, 60000);
+document.addEventListener('visibilitychange', function(){ if (!document.hidden) load(); });
 </script>
 </body>
 </html>
