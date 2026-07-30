@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-30T21:07:57+09:00",
+ "updated": "2026-07-30T21:26:55+09:00",
  "date": "7/31",
  "game": {
   "dateLabel": "2026年7月31日（金）",
@@ -39,6 +39,9 @@
     "images/0731_goods2.jpg",
     "images/0731_goods3.jpg",
     "images/0731_goods4.jpg"
+   ],
+   "food": [
+    "images/0731_food.png"
    ]
   }
  },
@@ -65,12 +68,6 @@
    "title": "Dance School Lydia　ダンス",
    "place": "グラウンド",
    "time": "17:30～35",
-   "phase": "試合前"
-  },
-  {
-   "title": "松山ファミリー　セレモニアルピッチ",
-   "place": "グラウンド",
-   "time": "",
    "phase": "試合前"
   },
   {
