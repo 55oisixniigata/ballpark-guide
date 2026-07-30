@@ -690,7 +690,6 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
   </div>
   <div class="card">
     <div class="tl" id="tl"></div>
-    <div class="event-note" id="tl-note"></div>
   </div>
 </div>
 
@@ -804,16 +803,6 @@ function buildTimeline(g, events){
     pair[1].forEach(function(it){ html += itemHtml(it, pair[2]); });
   });
   document.getElementById('tl').innerHTML = html;
-
-  const off = [];
-  if (!p.fureai) off.push('ふれあいタイム');
-  if (!p.kirikomi) off.push('切り込みアナウンサー');
-  const parts = [];
-  if (off.length) parts.push('本日おやすみの企画：' + off.join('／'));
-  if (g.infoDesk) parts.push('総合案内所・後援会：' + g.infoDesk);
-  const note = document.getElementById('tl-note');
-  if (parts.length) note.innerHTML = parts.map(esc).join('<br>');
-  else note.style.display = 'none';
 }
 
 let lastGame = null, lastDate = null;
