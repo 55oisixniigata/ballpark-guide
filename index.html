@@ -452,7 +452,6 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
   <div class="hero-kicker" id="kicker">GAME DAY</div>
   <div class="hero-top">
     <span id="chip-date">読み込み中…</span>
-    <span id="chip-weather" style="display:none"></span>
   </div>
   <div class="matchup">
     <span class="team home"><small>HOME</small>オイシックス新潟<br>アルビレックスBC</span>
@@ -599,13 +598,12 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
   <div class="card">
     <div class="photo-slot stall-photo sunset">
       <svg class="cam"><use href="#ic-cam"/></svg>
-      <span class="ph-label">キッチンカー写真スペース</span>
+      <span class="ph-label">飲食ブース写真スペース</span>
     </div>
     <div class="stall-head">
-      <span class="stall-name">球団キッチンカー</span>
-      <span class="badge open">本日 出店あり</span>
+      <span class="stall-name">飲食ブース</span>
     </div>
-    <div class="stall-note" id="food-note">球場内で出店中。メニュー詳細は当日キッチンカーにてご確認ください。</div>
+    <div class="stall-note" id="food-note">出店情報は当日ブースにてご確認ください。</div>
   </div>
 </div>
 
@@ -707,6 +705,7 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
 
 <script>
 const DATA_URL = 'data.json';
+const SHOW_MAP = false; // ← 球場マップ。図が完成したら true に戻すと表示される
 const VENUE_NAMES = { 'エコスタ': 'HARD OFF ECOスタジアム新潟', '悠久山': '長岡市悠久山野球場' };
 
 function esc(s){ return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -735,14 +734,39 @@ function itemHtml(it, phaseKey){
   return '<div class="tl-item"' + attrs + '><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
          '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + photo + '</div></div>';
 }
+/* 飲食欄「1R：オイスタ／3R：焼きそば大野」を「【1塁側】オイスタ・焼きそば大野」に整える
+   R=ライト側=1塁側、L=レフト側=3塁側。想定外の書き方ならそのまま表示する */
+function formatFoodText(raw){
+  const s = String(raw || '').trim();
+  if (!s) return '';
+  const body = s.replace(/^\s*【[^】]*】\s*/, '');   // 先頭の【1塁側】等は付け直すので一旦外す
+  const groups = { '1塁側': [], '3塁側': [] };
+  let matched = 0;
+  body.split(/[／\/]/).forEach(function(part){
+    const m = part.trim().match(/^\d*\s*([RLrl])\s*[:：]\s*(.+)$/);
+    if (!m) return;
+    matched++;
+    groups[/[Rr]/.test(m[1]) ? '1塁側' : '3塁側'].push(m[2].trim());
+  });
+  if (!matched) return esc(s);
+  const lines = [];
+  ['1塁側', '3塁側'].forEach(function(side){
+    if (groups[side].length) lines.push('【' + side + '】' + groups[side].join('・'));
+  });
+  return lines.map(esc).join('<br>');
+}
+
 function placeTag(p){ return '<span class="tl-tag place"><svg><use href="#ic-pin"/></svg>' + esc(p) + '</span>'; }
 
 function buildTimeline(g, events){
   const pre = [], mid = [], post = [];
   if (g.openFanclub1) pre.push({ t: g.openFanclub1, cls: 'time', main: g.openFanclub1, title: '後援会先行入場（OD・D会員）' });
   if (g.ticketSaleStart) pre.push({ t: g.ticketSaleStart, cls: 'time', main: g.ticketSaleStart, title: 'チケット販売開始', sub: g.ticketPrice });
-  if (g.openFanclub2) pre.push({ t: g.openFanclub2, cls: 'time', main: g.openFanclub2, title: '後援会先行入場' });
-  if (g.openGeneral) pre.push({ t: g.openGeneral, cls: 'time', main: g.openGeneral, title: '一般開場', sub: 'グッズ・キッチンカーも順次オープン' });
+  if (g.openFanclub2) {
+    pre.push({ t: g.openFanclub2, cls: 'time', main: g.openFanclub2, title: '後援会先行入場' });
+    pre.push({ t: g.openFanclub2, cls: 'time', main: g.openFanclub2, title: 'グッズ・飲食ブース オープン' });
+  }
+  if (g.openGeneral) pre.push({ t: g.openGeneral, cls: 'time', main: g.openGeneral, title: '一般開場' });
 
   (events || []).forEach(function(ev){
     const parts = splitChip(ev.time);
@@ -759,7 +783,7 @@ function buildTimeline(g, events){
   if (p.fureai) mid.push({ cls: 'inning', main: '試合中', title: 'ふれあいタイム' });
   if (p.kirikomi) mid.push({ cls: 'inning', main: '試合中', title: '切り込みアナウンサー' });
   if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'プレゼント企画' });
-  if (p.kuji100) mid.push({ cls: 'always', main: '常時', title: '100円くじ販売', tags: ['<span class="tl-tag kikaku">場内企画</span>'] });
+  if (p.kuji100) mid.push({ cls: 'always', main: '6回裏', small: 'まで', title: '100円くじ販売', tags: ['<span class="tl-tag kikaku">場内企画</span>'] });
   if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画' });
   if (p.miokuri) post.push({ cls: 'after', main: '試合後', title: '選手のお見送り', sub: '※ビジターチームの移動時間により短縮または一部選手のみとなる場合があります' });
 
@@ -859,11 +883,6 @@ function render(data){
   if (g.crown) document.getElementById('kicker').textContent = g.crown;
   if (g.alphaKun) document.getElementById('alpha-badge').style.display = 'table';
   document.getElementById('chip-date').textContent = g.dateLabel || data.date;
-  if (g.weather) {
-    const w = document.getElementById('chip-weather');
-    w.style.display = '';
-    w.innerHTML = '<svg><use href="#ic-cloud"/></svg>' + esc(g.weather);
-  }
   document.getElementById('away-name').textContent = g.opponent || '対戦相手未定';
   document.getElementById('venue-name').textContent = VENUE_NAMES[g.venue] || g.venueRaw || g.venue || '—';
   document.getElementById('start-time').textContent = g.start || '未定';
@@ -878,9 +897,9 @@ function render(data){
   setText('v-smoking', g.smoking);
 
   if (g.goods) document.getElementById('goods-note').textContent = g.goods;
-  if (g.food) document.getElementById('food-note').textContent = g.food;
+  if (g.food) document.getElementById('food-note').innerHTML = formatFoodText(g.food);
 
-  if (g.venue !== 'エコスタ') { document.getElementById('map').style.display = 'none'; document.getElementById('nav-map').style.display = 'none'; }
+  if (!SHOW_MAP || g.venue !== 'エコスタ') setMapVisible(false);
 
   buildTimeline(g, data.events || []);
   lastGame = g; lastDate = data.date;
@@ -913,6 +932,13 @@ if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches && 'Int
     if (!ioAlive) targets.forEach(function(el){ el.classList.add('in'); });
   }, 1200);
 }
+
+function setMapVisible(show){
+  const v = show ? '' : 'none';
+  document.getElementById('map').style.display = v;
+  document.getElementById('nav-map').style.display = v;
+}
+if (!SHOW_MAP) setMapVisible(false); // データ取得を待たずに隠す
 
 (async function(){
   try {
