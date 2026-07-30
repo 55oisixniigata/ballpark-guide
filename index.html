@@ -98,7 +98,7 @@ svg{display:block}
   border:1.5px solid rgba(255,255,255,.16);
   border-radius:18px;padding:14px 10px;
 }
-.team{flex:1;text-align:center;font-weight:900;font-size:1.02rem;line-height:1.42}
+.team{flex:1;text-align:center;font-weight:900;font-size:1.02rem;line-height:1.42;word-break:keep-all;overflow-wrap:break-word}
 .team small{display:block;font-size:.56rem;font-weight:800;letter-spacing:.22em;text-indent:.22em;opacity:.75;margin-bottom:4px}
 .team.home small{color:var(--gold)}
 .vs{
@@ -116,7 +116,7 @@ svg{display:block}
 .hero-updated{text-align:center;font-size:.68rem;font-weight:800;color:rgba(255,255,255,.7);margin-top:11px;position:relative;z-index:1;letter-spacing:.05em}
 
 /* アルファくんお出迎え・来場バッジ */
-.alpha-badge{display:table;margin:11px auto 0;background:linear-gradient(150deg,var(--gold),var(--orange));color:var(--navy);font-size:.7rem;font-weight:900;padding:6px 15px;border-radius:20px;box-shadow:0 3px 0 rgba(0,0,0,.22);position:relative;z-index:1}
+.alpha-badge{display:table;margin:14px auto 0;background:linear-gradient(150deg,var(--gold),var(--orange));color:var(--navy);font-size:.7rem;font-weight:900;padding:6px 15px;border-radius:20px;box-shadow:0 3px 0 rgba(224,127,0,.25);position:relative;z-index:1}
 .welcome-strip{display:flex;align-items:flex-end;gap:10px;padding:12px 16px 0}
 .welcome-bubble{flex:1;background:#fff;border:2px solid var(--line);border-radius:18px 18px 4px 18px;padding:11px 14px;font-size:.78rem;font-weight:800;line-height:1.65;position:relative;box-shadow:var(--pop-shadow);margin-bottom:14px}
 .welcome-bubble::after{content:"";position:absolute;right:-16px;bottom:12px;border:8px solid transparent;border-left-color:#fff}
@@ -482,7 +482,6 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
     <span><svg><use href="#ic-clock"/></svg>試合開始&nbsp;<span id="start-time">—</span></span>
   </div>
   <div class="hero-updated" id="updated"></div>
-  <div class="alpha-badge" id="alpha-badge" style="display:none">本日 アルファくんに会える！</div>
 </div>
 
 <!-- ガーランド（三角旗の飾り） -->
@@ -503,6 +502,7 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
 </svg>
 
 <!-- アルファくんお出迎え -->
+<div class="alpha-badge" id="alpha-badge" style="display:none">本日 アルファくんに会える！</div>
 <div class="welcome-strip">
   <div class="welcome-bubble" id="welcome-bubble">やあ、ぼくアルファくん！<br>きょうの球場のたのしみ、ぜんぶ教えるね！</div>
   <img class="welcome-mascot" src="images/mascot-alpha.png" alt="アルファくん">
@@ -723,6 +723,21 @@ const DATA_URL_BACKUP = 'data.json';
 const API_URL = 'https://api.github.com/repos/55oisixniigata/ballpark-guide/contents/data.json';
 const SHOW_MAP = false; // ← 球場マップ。図が完成したら true に戻すと表示される
 const VENUE_NAMES = { 'エコスタ': 'HARD OFF ECOスタジアム新潟', '悠久山': '長岡市悠久山野球場' };
+
+/* チーム名を「地域・企業名」と「カタカナの愛称」の境目で改行する
+   例: 北海道日本ハムファイターズ → 北海道日本／ハムファイターズ
+       千葉ロッテマリーンズ     → 千葉／ロッテマリーンズ
+   単語の途中（ファイタ／ーズ）で切れるのを防ぐため */
+function breakTeamName(name){
+  const s = String(name ?? '');
+  const isKana = function(c){ return /[\u30A0-\u30FF\uFF66-\uFF9F]/.test(c); };
+  let at = -1;
+  for (let i = 1; i < s.length; i++) {
+    if (!isKana(s[i - 1]) && isKana(s[i])) at = i; // 一番右側の「非カナ→カナ」の境目を採用
+  }
+  if (at <= 0) return esc(s);
+  return esc(s.slice(0, at)) + '<wbr>' + esc(s.slice(at));
+}
 
 function esc(s){ return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function minutesOf(s){ const m = String(s || '').match(/(\d{1,2}):(\d{2})/); return m ? (+m[1]) * 60 + (+m[2]) : null; }
@@ -1000,7 +1015,7 @@ function render(data){
   if (g.crown) document.getElementById('kicker').textContent = g.crown;
   if (g.alphaKun) document.getElementById('alpha-badge').style.display = 'table';
   document.getElementById('chip-date').textContent = g.dateLabel || data.date;
-  document.getElementById('away-name').textContent = g.opponent || '対戦相手未定';
+  document.getElementById('away-name').innerHTML = breakTeamName(g.opponent || '対戦相手未定');
   document.getElementById('venue-name').textContent = VENUE_NAMES[g.venue] || g.venueRaw || g.venue || '—';
   document.getElementById('start-time').textContent = g.start || '未定';
 
