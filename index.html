@@ -173,7 +173,7 @@ svg{display:block}
 }
 .shots-track::-webkit-scrollbar{display:none}
 .shots-track img{
-  flex:0 0 100%;width:100%;height:100%;object-fit:cover;display:block;
+  flex:0 0 100%;width:100%;height:100%;object-fit:contain;display:block;
   scroll-snap-align:center;
 }
 .shots-dots{
@@ -924,6 +924,20 @@ function clearShotTimers(){
 
 /* スワイプ・ドット・自動送りを有効にする */
 function initShots(root){
+  // 枠の縦横比を1枚目の画像に合わせる（A4など16:9以外でも切れないように）
+  const first = root.querySelector('img');
+  if (first) {
+    // 呼び出し元によって root が .photo-slot だったり .shots だったりする
+    const box = root.classList.contains('shots') ? root.parentElement : root;
+    const fitBox = function(){
+      if (box && first.naturalWidth && first.naturalHeight) {
+        box.style.aspectRatio = first.naturalWidth + ' / ' + first.naturalHeight;
+      }
+    };
+    if (first.complete) fitBox();
+    else first.addEventListener('load', fitBox, { once: true });
+  }
+
   const track = root.querySelector('.shots-track');
   const dots = Array.prototype.slice.call(root.querySelectorAll('.shots-dots span'));
   if (!track || dots.length < 2) return;
