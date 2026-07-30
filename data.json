@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-30T20:34:16+09:00",
+ "updated": "2026-07-30T20:37:55+09:00",
  "date": "7/31",
  "game": {
   "dateLabel": "2026年7月31日（金）",
@@ -30,17 +30,7 @@
    "miokuri": false
   },
   "notice": "",
-  "photos": {
-   "pickup": [
-    "images/0731_pickup.jpg"
-   ],
-   "goods": [
-    "images/0731_goods1.jpg",
-    "images/0731_goods2.jpg",
-    "images/0731_goods3.jpg",
-    "images/0731_goods4.jpg"
-   ]
-  }
+  "photos": {}
  },
  "events": [
   {
@@ -53,7 +43,7 @@
    "title": "宝くじ販売",
    "place": "コンコース",
    "time": "",
-   "phase": "試合前"
+   "phase": "常時"
   },
   {
    "title": "SOSHI トークショー・始球式",
