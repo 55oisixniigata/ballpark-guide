@@ -162,9 +162,34 @@ svg{display:block}
 .photo-slot.sunset .ph-label{color:var(--orange-dark)}
 .photo-slot.berry{background:repeating-linear-gradient(-45deg,#ff7a9d 0 16px,#ff5c86 16px 32px)}
 .photo-slot.berry .ph-label{color:var(--pink)}
-.photo-slot.has-photo{background:none}
+.photo-slot.has-photo{display:block;background:none}
 .photo-slot.has-photo::before{display:none}
-.photo-slot img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* 写真スライドショー（横スワイプ＋自動送り） */
+.shots{position:relative;width:100%;height:100%}
+.shots-track{
+  display:flex;height:100%;overflow-x:auto;
+  scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.shots-track::-webkit-scrollbar{display:none}
+.shots-track img{
+  flex:0 0 100%;width:100%;height:100%;object-fit:cover;display:block;
+  scroll-snap-align:center;
+}
+.shots-dots{
+  position:absolute;left:0;right:0;bottom:9px;z-index:2;
+  display:flex;gap:6px;justify-content:center;
+}
+.shots-dots span{
+  width:7px;height:7px;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.6);box-shadow:0 1px 3px rgba(0,0,0,.4);
+  transition:width .2s ease,background .2s ease;
+}
+.shots-dots span.on{width:18px;border-radius:4px;background:#fff}
+.tl-shots{
+  margin-top:9px;aspect-ratio:16/9;overflow:hidden;
+  border:2px solid var(--line);border-radius:12px;box-shadow:var(--pop-shadow);
+}
 .photo-slot.grape{background:repeating-linear-gradient(-45deg,#a68ae0 0 16px,#8b6fd1 16px 32px)}
 .photo-slot.grape .ph-label{color:var(--purple)}
 
@@ -395,11 +420,6 @@ svg{display:block}
 .tl-tag.gift{background:var(--green-bg);color:var(--green)}
 .tl-tag.present{background:var(--teal-bg);color:var(--teal)}
 .tl-tag.kikaku{background:var(--orange-bg);color:var(--orange-dark)}
-.tl-photo{
-  width:100%;aspect-ratio:16/9;object-fit:cover;display:block;
-  border-radius:12px;border:2px solid var(--line);margin-top:9px;
-  box-shadow:var(--pop-shadow);
-}
 
 /* ===== マイクロインタラクション ===== */
 .qn,.cross-link{transition:transform .15s ease}
@@ -725,7 +745,8 @@ function itemHtml(it, phaseKey){
   const small = it.small ? '<small>' + esc(it.small) + '</small>' : '';
   const sub = it.sub ? '<div class="tl-sub">' + esc(it.sub) + '</div>' : '';
   const tags = (it.tags && it.tags.length) ? '<div class="tl-tags">' + it.tags.join('') + '</div>' : '';
-  const photo = it.photo ? '<img class="tl-photo" src="' + esc(it.photo) + '" alt="' + esc(it.title) + '" loading="lazy">' : '';
+  const photo = (it.photos && it.photos.length)
+    ? '<div class="tl-shots">' + shotsHtml(it.photos, it.title) + '</div>' : '';
   return '<div class="tl-item"' + attrs + '><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
          '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + photo + '</div></div>';
 }
@@ -765,7 +786,7 @@ function buildTimeline(g, events){
 
   (events || []).forEach(function(ev){
     const parts = splitChip(ev.time);
-    const item = { t: ev.time, cls: 'time', main: parts[0], small: parts[1], title: ev.title, photo: ev.photo, tags: ev.place ? [placeTag(ev.place)] : [] };
+    const item = { t: ev.time, cls: 'time', main: parts[0], small: parts[1], title: ev.title, photos: ev.photos, tags: ev.place ? [placeTag(ev.place)] : [] };
     if (ev.phase === '試合中') { item.cls = 'inning'; mid.push(item); }
     else if (ev.phase === '常時') { item.cls = 'always'; if (!String(ev.time || '').trim()) { item.main = '常時'; item.small = ''; } mid.push(item); }
     else if (ev.phase === '試合後') { item.cls = 'after'; if (!String(ev.time || '').trim()) { item.main = '試合後'; item.small = ''; } post.push(item); }
@@ -799,6 +820,7 @@ function buildTimeline(g, events){
     pair[1].forEach(function(it){ html += itemHtml(it, pair[2]); });
   });
   document.getElementById('tl').innerHTML = html;
+  document.querySelectorAll('#tl .shots').forEach(initShots);
 }
 
 let lastGame = null, lastDate = null;
@@ -851,15 +873,62 @@ window.__testNow = function(hhmm){
   applyNowMarker(lastGame, (d.getMonth() + 1) + '/' + d.getDate(), d);
 };
 
+/* 写真のスライドショーHTMLを作る（1枚だけならドットは出ない） */
+function shotsHtml(list, alt){
+  const imgs = list.map(function(src, i){
+    return '<img src="' + esc(src) + '" alt="' + esc(alt) + (list.length > 1 ? ' ' + (i+1) : '') +
+           '" loading="' + (i === 0 ? 'eager' : 'lazy') + '">';
+  }).join('');
+  const dots = list.length > 1
+    ? '<div class="shots-dots">' + list.map(function(_, i){ return '<span' + (i === 0 ? ' class="on"' : '') + '></span>'; }).join('') + '</div>'
+    : '';
+  return '<div class="shots"><div class="shots-track">' + imgs + '</div>' + dots + '</div>';
+}
+
+/* スワイプ・ドット・自動送りを有効にする */
+function initShots(root){
+  const track = root.querySelector('.shots-track');
+  const dots = Array.prototype.slice.call(root.querySelectorAll('.shots-dots span'));
+  if (!track || dots.length < 2) return;
+  let paused = false;
+
+  const indexOfNow = function(){ return Math.round(track.scrollLeft / track.clientWidth); };
+  const sync = function(){
+    const i = indexOfNow();
+    dots.forEach(function(d, n){ d.classList.toggle('on', n === i); });
+  };
+  track.addEventListener('scroll', sync, { passive: true });
+
+  dots.forEach(function(d, n){
+    d.addEventListener('click', function(){
+      paused = true;
+      track.scrollTo({ left: n * track.clientWidth, behavior: 'smooth' });
+    });
+  });
+
+  // 手で操作したら自動送りは止める
+  ['pointerdown', 'touchstart', 'wheel'].forEach(function(ev){
+    track.addEventListener(ev, function(){ paused = true; }, { passive: true });
+  });
+
+  if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+  setInterval(function(){
+    if (paused || document.hidden) return;
+    const next = (indexOfNow() + 1) % dots.length;
+    track.scrollTo({ left: next * track.clientWidth, behavior: 'smooth' });
+  }, 4500);
+}
+
 /* セクション写真を差し込む（写真が無い枠は非表示のまま） */
-function applyPhoto(slotId, src, alt, sectionId){
-  if (!src) return;
+function applyPhotos(slotId, list, alt, sectionId){
+  if (!list || !list.length) return;
   const slot = document.getElementById(slotId);
   if (!slot) return;
-  slot.innerHTML = '<img src="' + esc(src) + '" alt="' + esc(alt) + '" loading="lazy">';
+  slot.innerHTML = shotsHtml(list, alt);
   slot.classList.add('has-photo');
   slot.style.display = '';
   if (sectionId) document.getElementById(sectionId).style.display = '';
+  initShots(slot);
 }
 
 function render(data){
@@ -895,10 +964,12 @@ function render(data){
   if (g.goods) document.getElementById('goods-note').textContent = g.goods;
   if (g.food) document.getElementById('food-note').innerHTML = formatFoodText(g.food);
 
+  setTimeout(revealInView, 60); // データ描画で高さが変わるため再判定
+
   const ph = g.photos || {};
-  applyPhoto('slot-pickup', ph.pickup, '本日の注目シーン', 'pickup-section');
-  applyPhoto('slot-goods', ph.goods, 'グッズ販売ブース');
-  applyPhoto('slot-food', ph.food, '飲食ブース');
+  applyPhotos('slot-pickup', ph.pickup, '本日の注目シーン', 'pickup-section');
+  applyPhotos('slot-goods', ph.goods, 'グッズ販売ブース');
+  applyPhotos('slot-food', ph.food, '飲食ブース');
 
   if (!SHOW_MAP || g.venue !== 'エコスタ') setMapVisible(false);
 
@@ -915,23 +986,27 @@ function render(data){
 }
 
 // スクロールに合わせてカードをふわっと表示（動きを減らす設定の端末では無効）
-if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
-  let ioAlive = false;
-  const io = new IntersectionObserver(function(entries){
-    ioAlive = true;
-    entries.forEach(function(e){
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-    });
-  }, { threshold: .12 });
-  const targets = document.querySelectorAll('.section .card, .sec-head, .photo-hero-wrap, .cross-link, .welcome-strip');
-  targets.forEach(function(el){
-    el.classList.add('reveal');
-    io.observe(el);
+/* スクロールに合わせてカードをふわっと表示（動きを減らす設定の端末では無効）
+   画面に少しでも入ったら必ず表示するので、画面より高いカードでも消えたままにならない */
+let revealTargets = [];
+function revealInView(){
+  if (!revealTargets.length) return;
+  const limit = window.innerHeight * 0.92;
+  revealTargets = revealTargets.filter(function(el){
+    const r = el.getBoundingClientRect();
+    if (r.top < limit && r.bottom > 0) { el.classList.add('in'); return false; }
+    return true;
   });
-  // 保険: 検知が動かない環境では1.2秒後に全て表示（非表示のまま残さない）
-  setTimeout(function(){
-    if (!ioAlive) targets.forEach(function(el){ el.classList.add('in'); });
-  }, 1200);
+}
+if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+  revealTargets = Array.prototype.slice.call(
+    document.querySelectorAll('.section .card, .sec-head, .photo-hero-wrap, .cross-link, .welcome-strip')
+  );
+  revealTargets.forEach(function(el){ el.classList.add('reveal'); });
+  window.addEventListener('scroll', revealInView, { passive: true });
+  window.addEventListener('resize', revealInView, { passive: true });
+  revealInView();
+  setTimeout(revealInView, 400);
 }
 
 function setMapVisible(show){
