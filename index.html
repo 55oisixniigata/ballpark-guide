@@ -748,26 +748,52 @@ function itemHtml(it, phaseKey){
   return '<div class="tl-item"' + attrs + '><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
          '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + photo + '</div></div>';
 }
-/* 飲食欄「1R：オイスタ／3R：焼きそば大野」を「【1塁側】オイスタ・焼きそば大野」に整える
-   R=ライト側=1塁側、L=レフト側=3塁側。想定外の書き方ならそのまま表示する */
+/* 飲食欄を来場者向けに整える。
+   シートの書き方（複数行あり）:
+     【1塁側】1R：オイスタ／3R：焼きそば大野
+     【3塁側】1L：角上魚類
+     【入場口】キッチンカー15台
+   → 【1塁側】オイスタ・焼きそば大野 / 【3塁側】角上魚類 / 【入場口】キッチンカー15台
+   【】が無い行は R=1塁側・L=3塁側 で振り分け、それも無ければそのまま表示する */
 function formatFoodText(raw){
-  const s = String(raw || '').trim();
-  if (!s) return '';
-  const body = s.replace(/^\s*【[^】]*】\s*/, '');   // 先頭の【1塁側】等は付け直すので一旦外す
-  const groups = { '1塁側': [], '3塁側': [] };
-  let matched = 0;
-  body.split(/[／\/]/).forEach(function(part){
-    const m = part.trim().match(/^\d*\s*([RLrl])\s*[:：]\s*(.+)$/);
-    if (!m) return;
-    matched++;
-    groups[/[Rr]/.test(m[1]) ? '1塁側' : '3塁側'].push(m[2].trim());
+  const lines = String(raw || '').split(/\r?\n/)
+    .map(function(s){ return s.trim(); })
+    .filter(function(s){ return s; });
+  if (!lines.length) return '';
+
+  const order = [];
+  const groups = {};
+  const plain = [];
+  const add = function(place, item){
+    if (!item) return;
+    if (!groups[place]) { groups[place] = []; order.push(place); }
+    if (groups[place].indexOf(item) < 0) groups[place].push(item);
+  };
+
+  lines.forEach(function(line){
+    const m = line.match(/^【([^】]*)】\s*(.*)$/);
+    const place = m ? m[1].trim() : '';
+    const body = m ? m[2] : line;
+    const rest = [];
+    body.split(/[／\/]/).forEach(function(part){
+      const t = part.trim();
+      if (!t) return;
+      const code = t.match(/^\d*\s*([RLrl])\s*[:：]\s*(.+)$/);
+      if (code) {
+        add(place || (/[Rr]/.test(code[1]) ? '1塁側' : '3塁側'), code[2].trim());
+      } else {
+        rest.push(t);
+      }
+    });
+    if (rest.length) {
+      if (place) rest.forEach(function(t){ add(place, t); });
+      else plain.push(rest.join('・'));
+    }
   });
-  if (!matched) return esc(s);
-  const lines = [];
-  ['1塁側', '3塁側'].forEach(function(side){
-    if (groups[side].length) lines.push('【' + side + '】' + groups[side].join('・'));
-  });
-  return lines.map(esc).join('<br>');
+
+  const out = order.map(function(p){ return '【' + p + '】' + groups[p].join('・'); });
+  plain.forEach(function(t){ out.push(t); });
+  return out.map(esc).join('<br>');
 }
 
 function placeTag(p){ return '<span class="tl-tag place"><svg><use href="#ic-pin"/></svg>' + esc(p) + '</span>'; }
@@ -970,7 +996,7 @@ function render(data){
   setText('v-bus', g.shuttleBus);
   setText('v-smoking', g.smoking);
 
-  if (g.goods) document.getElementById('goods-note').textContent = g.goods;
+  if (g.goods) document.getElementById('goods-note').innerHTML = esc(g.goods).replace(/\r?\n/g, '<br>');
   if (g.food) document.getElementById('food-note').innerHTML = formatFoodText(g.food);
 
   setTimeout(revealInView, 60); // データ描画で高さが変わるため再判定
