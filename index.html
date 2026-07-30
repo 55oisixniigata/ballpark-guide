@@ -718,6 +718,9 @@ footer .ball{width:20px;height:20px;margin:0 auto 8px;fill:none;stroke:var(--mut
 const RAW_BASE = 'https://raw.githubusercontent.com/55oisixniigata/ballpark-guide/main/';
 const DATA_URL = RAW_BASE + 'data.json';
 const DATA_URL_BACKUP = 'data.json';
+/* GitHub APIは更新が即座に反映される（rawは数分遅れることがある）。
+   ただし1時間60回の制限があるため、ページを開いた時だけ使い、裏の定期更新は制限のないrawを使う。 */
+const API_URL = 'https://api.github.com/repos/55oisixniigata/ballpark-guide/contents/data.json';
 const SHOW_MAP = false; // ← 球場マップ。図が完成したら true に戻すと表示される
 const VENUE_NAMES = { 'エコスタ': 'HARD OFF ECOスタジアム新潟', '悠久山': '長岡市悠久山野球場' };
 
@@ -1053,22 +1056,34 @@ function setMapVisible(show){
 }
 if (!SHOW_MAP) setMapVisible(false); // データ取得を待たずに隠す
 
-/* データを取りに行く（rawがダメならPages側を試す） */
-async function fetchData(){
-  const urls = [DATA_URL, DATA_URL_BACKUP];
-  for (let i = 0; i < urls.length; i++) {
+/* データを取りに行く。fresh=true なら最速のAPIを先に試し、
+   ダメなら raw →（さらにダメなら）Pages側 の順に切り替える */
+let lastApiAt = 0;
+async function fetchData(fresh){
+  const tries = [];
+  if (fresh && Date.now() - lastApiAt > 180000) {
+    tries.push({ api: true, url: API_URL,
+                 opts: { headers: { Accept: 'application/vnd.github.raw' }, cache: 'no-store' } });
+  }
+  tries.push({ url: DATA_URL + '?t=' + Date.now(), opts: { cache: 'no-store' } });
+  tries.push({ url: DATA_URL_BACKUP + '?t=' + Date.now(), opts: { cache: 'no-store' } });
+
+  for (let i = 0; i < tries.length; i++) {
     try {
-      const res = await fetch(urls[i] + '?t=' + Date.now(), { cache: 'no-store' });
-      if (res.ok) return await res.json();
+      const res = await fetch(tries[i].url, tries[i].opts);
+      if (!res.ok) continue;              // 制限にかかった時などは次の手段へ
+      const data = JSON.parse(await res.text());
+      if (tries[i].api) lastApiAt = Date.now();
+      return data;
     } catch (e) { /* 次を試す */ }
   }
   return null;
 }
 
-/* 内容が変わっていたときだけ描き直す */
+/* 内容が新しくなっていたときだけ描き直す */
 let lastUpdated = null;
-async function load(){
-  const data = await fetchData();
+async function load(fresh){
+  const data = await fetchData(fresh);
   if (!data) {
     if (!lastUpdated) { // 一度も表示できていない時だけ知らせる
       document.getElementById('err').style.display = 'block';
@@ -1077,15 +1092,15 @@ async function load(){
     return;
   }
   document.getElementById('err').style.display = 'none';
-  if (data.updated === lastUpdated) return;
+  if (lastUpdated && !(data.updated > lastUpdated)) return; // 古い内容で上書きしない
   lastUpdated = data.updated;
   render(data);
 }
 
-load();
+load(true);
 // ページを開いたままでも最新になるよう、1分ごと＋画面に戻ったときに取り直す
-setInterval(load, 60000);
-document.addEventListener('visibilitychange', function(){ if (!document.hidden) load(); });
+setInterval(function(){ load(false); }, 60000);
+document.addEventListener('visibilitychange', function(){ if (!document.hidden) load(true); });
 </script>
 </body>
 </html>
