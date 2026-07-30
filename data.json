@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-30T20:47:23+09:00",
+ "updated": "2026-07-30T21:07:57+09:00",
  "date": "7/31",
  "game": {
   "dateLabel": "2026年7月31日（金）",
@@ -30,7 +30,17 @@
    "miokuri": false
   },
   "notice": "",
-  "photos": {}
+  "photos": {
+   "pickup": [
+    "images/0731_pickup.jpg"
+   ],
+   "goods": [
+    "images/0731_goods1.jpg",
+    "images/0731_goods2.jpg",
+    "images/0731_goods3.jpg",
+    "images/0731_goods4.jpg"
+   ]
+  }
  },
  "events": [
   {
