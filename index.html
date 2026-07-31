@@ -839,9 +839,12 @@ function buildTimeline(g, events){
   if (g.ticketSaleStart) pre.push({ t: g.ticketSaleStart, cls: 'time', main: g.ticketSaleStart, title: 'チケット販売開始', sub: g.ticketPrice });
   if (g.openFanclub2) {
     pre.push({ t: g.openFanclub2, cls: 'time', main: g.openFanclub2, title: '後援会先行入場' });
-    pre.push({ t: g.openFanclub2, cls: 'time', main: g.openFanclub2, title: 'グッズ・飲食ブース オープン' });
+    pre.push({ t: g.openFanclub2, cls: 'time', main: g.openFanclub2, title: '総合案内所・グッズストア オープン' });
   }
-  if (g.openGeneral) pre.push({ t: g.openGeneral, cls: 'time', main: g.openGeneral, title: '一般開場' });
+  if (g.openGeneral) {
+    pre.push({ t: g.openGeneral, cls: 'time', main: g.openGeneral, title: '一般開場' });
+    pre.push({ t: g.openGeneral, cls: 'time', main: g.openGeneral, title: '飲食ブース オープン' });
+  }
 
   (events || []).forEach(function(ev){
     const parts = splitChip(ev.time);
