@@ -402,6 +402,7 @@ svg{display:block}
 .tl-chip.always{background:var(--orange);box-shadow:0 3px 0 rgba(224,127,0,.35)}
 .tl-chip.after{background:var(--green);box-shadow:0 3px 0 rgba(47,174,114,.35)}
 .tl-body{flex:1;padding-top:3px}
+.tl-subrow + .tl-subrow{margin-top:10px;padding-top:10px;border-top:1.5px dashed var(--line)}
 .tl-title{font-weight:900;font-size:.88rem;line-height:1.5}
 .tl-sub{font-size:.73rem;color:var(--muted);font-weight:700;margin-top:2px;line-height:1.6}
 .tl-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
@@ -806,14 +807,14 @@ const PROMO_DETAILS = {
     ],
   },
   ballcatch2: {
-    body: '2回表終了後、スタッフが景品名が書かれたボールをスタンドへ打ち込みます！ボールをキャッチされた方は、試合終了までに総合案内所にお越しください！',
-  },
-  aiwakatsu: {
-    body: '勝利を願おう！アルファくんと一緒にフラッグを振ろう！',
-    notes: ['フラッグは各自で事前にご準備ください'],
+    body: 'スタッフが景品名が書かれたボールをスタンドへ打ち込みます！ボールをキャッチされた方は、試合終了までに総合案内所にお越しください！',
   },
   present: {
-    body: '5回裏終了後、景品名が書かれたボールを投げ込みます！ボールをキャッチされた方は、試合終了までに総合案内所にお越しください！',
+    body: '5回裏終了後には「ティラノレース」と「プレゼント企画」を実施！',
+    notes: [
+      '参加方法（ティラノレース）：総合案内所で参加者を受け付けます',
+      '引き換え方法（プレゼント企画）：景品名が書かれたボールを投げ込みます。キャッチされた方は試合終了までに総合案内所にお越しください',
+    ],
   },
   kattara: {
     body: '勝利時はヒーローインタビューの後に、当日使用した公式試合球が3名様に当たる「勝ったら企画」の抽選会を実施します。',
@@ -827,10 +828,9 @@ const PROMO_DETAILS = {
 
 let tlDetailSeq = 0;
 
-function itemHtml(it, phaseKey){
-  const min = minutesOf(it.t);
-  const attrs = ' data-phase="' + (phaseKey || '') + '" data-min="' + (min == null ? '' : min) + '"';
-  const small = it.small ? '<small>' + esc(it.small) + '</small>' : '';
+/* タイトル・サブ・タグ・写真・詳しくボタンをまとめた「中身」だけを作る（チップは含まない）。
+   通常は1件で1枠だが、同じ時刻の項目を1枠にまとめるときは複数件分をここで作って並べる */
+function tlBodyInnerHtml(it){
   const sub = it.sub ? '<div class="tl-sub">' + esc(it.sub) + '</div>' : '';
   const tags = (it.tags && it.tags.length) ? '<div class="tl-tags">' + it.tags.join('') + '</div>' : '';
   const photo = (it.photos && it.photos.length)
@@ -856,8 +856,26 @@ function itemHtml(it, phaseKey){
            bodyHtml + notes + extraHtml + '</div></div>';
   }
 
+  return '<div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + photo + more;
+}
+
+function itemHtml(it, phaseKey){
+  const min = minutesOf(it.t);
+  const attrs = ' data-phase="' + (phaseKey || '') + '" data-min="' + (min == null ? '' : min) + '"';
+  const small = it.small ? '<small>' + esc(it.small) + '</small>' : '';
   return '<div class="tl-item"' + attrs + '><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
-         '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + photo + more + '</div></div>';
+         '</div><div class="tl-body">' + tlBodyInnerHtml(it) + '</div></div>';
+}
+
+/* 同じ時刻の項目を1枚のカードにまとめて表示する（コンパクト化）。チップは先頭の項目のものを使う */
+function groupedItemHtml(members, phaseKey){
+  const first = members[0];
+  const min = minutesOf(first.t);
+  const attrs = ' data-phase="' + (phaseKey || '') + '" data-min="' + (min == null ? '' : min) + '"';
+  const small = first.small ? '<small>' + esc(first.small) + '</small>' : '';
+  const rows = members.map(function(it){ return '<div class="tl-subrow">' + tlBodyInnerHtml(it) + '</div>'; }).join('');
+  return '<div class="tl-item"' + attrs + '><div class="tl-chip ' + first.cls + '">' + esc(first.main) + small +
+         '</div><div class="tl-body">' + rows + '</div></div>';
 }
 
 /* 「詳しく」ボタンの開閉を有効にする（タイムライン再描画のたびに呼ぶ） */
@@ -957,11 +975,11 @@ function buildTimeline(g, events){
   const p = g.promos || {};
   if (p.fureai) pre.push({ cls: 'time', main: '試合前', title: 'ふれあいタイム', detailKey: 'fureai' });
   mid.push({ cls: 'always', main: '常時', title: 'NPB公式試合球をゲット！', detailKey: 'foulball' });
-  mid.push({ cls: 'inning', main: '2回表', small: '終了後', title: '景品プレゼント（ボールキャッチ）', detailKey: 'ballcatch2' });
-  mid.push({ cls: 'inning', main: '3回表', small: '終了後', title: '回せ！タオルタイム' });
-  mid.push({ cls: 'inning', main: '4回表', small: '終了後', title: '「愛は勝つ」タイム', detailKey: 'aiwakatsu' });
+  mid.push({ cls: 'inning', main: '2回表', small: '終了後', title: '越後製菓提供 お餅タイム', detailKey: 'ballcatch2' });
+  mid.push({ cls: 'inning', main: '3回表', small: '終了後', title: '回せ！タオルタイム', sub: 'みんなで音に合わせてタオルを回そう！' });
+  mid.push({ cls: 'inning', main: '4回表', small: '終了後', title: '「愛は勝つ」タイム', sub: '一緒にフラッグを振ろう！' });
   if (p.kirikomi) mid.push({ cls: 'inning', main: '試合中', title: '切り込みアナウンサー' });
-  if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'プレゼント企画', detailKey: 'present', extraNote: g.infoDesk });
+  if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'ティラノレースとプレゼント企画', detailKey: 'present', extraNote: g.infoDesk });
   if (p.kuji100) mid.push({ cls: 'always', main: '6回', small: '終了まで', title: '100円くじ販売', detailKey: 'kuji100' });
   if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画', detailKey: 'kattara' });
   if (p.miokuri) post.push({ cls: 'after', main: '試合後', title: '選手のお見送り', sub: '※ビジターチームの移動時間により短縮または一部選手のみとなる場合があります' });
@@ -981,7 +999,28 @@ function buildTimeline(g, events){
   [['試合前', pre, 'pre'], ['試合中', mid, 'mid'], ['試合後', post, 'post']].forEach(function(pair){
     if (!pair[1].length) return;
     html += '<div class="tl-phase" data-phase-head="' + pair[2] + '"><span>' + pair[0] + '</span></div>';
-    pair[1].forEach(function(it){ html += itemHtml(it, pair[2]); });
+    if (pair[2] !== 'pre') {
+      pair[1].forEach(function(it){ html += itemHtml(it, pair[2]); });
+      return;
+    }
+    // 試合前だけ：時刻表記が完全に一致する項目だけ1枚のカードにまとめる
+    // （「16:00」同士はまとめるが、「16:00〜45」のような時間幅を持つ項目は巻き込まない）
+    let i = 0;
+    while (i < pair[1].length) {
+      const cur = pair[1][i];
+      const group = [cur];
+      if (!cur.last && cur.t) {
+        let j = i + 1;
+        while (j < pair[1].length && !pair[1][j].last && pair[1][j].t === cur.t) {
+          group.push(pair[1][j]);
+          j++;
+        }
+        i = j;
+      } else {
+        i++;
+      }
+      html += group.length > 1 ? groupedItemHtml(group, pair[2]) : itemHtml(group[0], pair[2]);
+    }
   });
   document.getElementById('tl').innerHTML = html;
   document.querySelectorAll('#tl .shots').forEach(initShots);
