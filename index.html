@@ -412,7 +412,6 @@ svg{display:block}
 .tl-tag.stage{background:var(--purple-bg);color:var(--purple)}
 .tl-tag.gift{background:var(--green-bg);color:var(--green)}
 .tl-tag.present{background:var(--teal-bg);color:var(--teal)}
-.tl-tag.kikaku{background:var(--orange-bg);color:var(--orange-dark)}
 .tl-more{
   display:inline-flex;align-items:center;gap:3px;margin-top:7px;
   font-size:.68rem;font-weight:900;color:var(--purple);background:none;border:none;
@@ -945,10 +944,10 @@ function buildTimeline(g, events){
 
   const p = g.promos || {};
   if (p.fureai) pre.push({ cls: 'time', main: '試合前', title: 'ふれあいタイム', detailKey: 'fureai' });
-  mid.push({ cls: 'always', main: '常時', title: 'NPB公式試合球をゲット！', tags: ['<span class="tl-tag kikaku">場内企画</span>'], detailKey: 'foulball' });
+  mid.push({ cls: 'always', main: '常時', title: 'NPB公式試合球をゲット！', detailKey: 'foulball' });
   if (p.kirikomi) mid.push({ cls: 'inning', main: '試合中', title: '切り込みアナウンサー' });
   if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'プレゼント企画', detailKey: 'present' });
-  if (p.kuji100) mid.push({ cls: 'always', main: '6回裏', small: 'まで', title: '100円くじ販売', tags: ['<span class="tl-tag kikaku">場内企画</span>'], detailKey: 'kuji100' });
+  if (p.kuji100) mid.push({ cls: 'always', main: '6回', small: '終了まで', title: '100円くじ販売', detailKey: 'kuji100' });
   if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画', detailKey: 'kattara' });
   if (p.miokuri) post.push({ cls: 'after', main: '試合後', title: '選手のお見送り', sub: '※ビジターチームの移動時間により短縮または一部選手のみとなる場合があります' });
 
