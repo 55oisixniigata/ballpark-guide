@@ -413,6 +413,27 @@ svg{display:block}
 .tl-tag.gift{background:var(--green-bg);color:var(--green)}
 .tl-tag.present{background:var(--teal-bg);color:var(--teal)}
 .tl-tag.kikaku{background:var(--orange-bg);color:var(--orange-dark)}
+.tl-more{
+  display:inline-flex;align-items:center;gap:3px;margin-top:7px;
+  font-size:.68rem;font-weight:900;color:var(--purple);background:none;border:none;
+  padding:0;cursor:pointer;font-family:inherit;
+}
+.tl-more svg{width:9px;height:9px;fill:var(--purple);transition:transform .2s ease}
+.tl-more[aria-expanded="true"] svg{transform:rotate(180deg)}
+.tl-detail{
+  max-height:0;overflow:hidden;
+  transition:max-height .25s ease,opacity .2s ease,margin-top .25s ease;
+  opacity:0;
+}
+.tl-detail.open{opacity:1;margin-top:8px}
+.tl-detail-inner{
+  background:var(--bg);border-radius:12px;padding:11px 13px;
+  font-size:.76rem;line-height:1.7;color:var(--navy-soft);font-weight:600;
+}
+.tl-detail-notes{margin-top:6px;color:var(--muted);font-size:.71rem;line-height:1.7;font-weight:700}
+@media (prefers-reduced-motion: reduce){
+  .tl-detail{transition:none}
+}
 
 /* ===== マイクロインタラクション ===== */
 .qn,.cross-link{transition:transform .15s ease}
@@ -772,6 +793,36 @@ function splitChip(time){
   return [s.slice(0, 5), s.slice(5)];
 }
 
+/* 常設企画の説明文（パンフレット準拠）。毎試合内容が変わらないためシート入力ではなくここに持つ。
+   キーは g.promos のキー名に合わせる。説明が無いキーには「詳しく」を出さない。 */
+const PROMO_DETAILS = {
+  fureai: {
+    body: '試合前のグラウンド（外野）に入ってキャッチボールなどができます。日替わりで選手も登場するのでお楽しみに！',
+  },
+  foulball: {
+    body: 'スタンドに入ったファウルボールはプレゼントさせていただきます。',
+    notes: [
+      'ファウルボールの行方には十分ご注意ください',
+      '危険防止のため、球場外に出たボールはスタッフが回収させていただきます',
+      '通路を走る、ふさぐ、自席を離れてボールを拾うなど迷惑行為が見られた場合にはスタッフにて注意させていただく場合がございます',
+    ],
+  },
+  present: {
+    body: '5回裏終了後には、プレゼント企画を実施。新潟にちなんだ素敵な景品を多数ご用意しています。',
+    notes: ['引き換え：総合案内所'],
+  },
+  kattara: {
+    body: '勝利時はヒーローインタビューの後に、当日使用した公式試合球が3名様に当たる「勝ったら企画」の抽選会を実施します。',
+    notes: ['受付場所：総合案内所', '受付時間：6回終了まで'],
+  },
+  kuji100: {
+    body: '選手が昨年実際に着用したユニフォームがあたる100円くじを開催中。100円で抽選券1枚と引き換えができ、さらに選手カード1枚をお渡しします。',
+    notes: ['開催場所：総合案内所', '受付時間：6回終了まで', '抽選発表：試合終了後'],
+  },
+};
+
+let tlDetailSeq = 0;
+
 function itemHtml(it, phaseKey){
   const min = minutesOf(it.t);
   const attrs = ' data-phase="' + (phaseKey || '') + '" data-min="' + (min == null ? '' : min) + '"';
@@ -780,8 +831,43 @@ function itemHtml(it, phaseKey){
   const tags = (it.tags && it.tags.length) ? '<div class="tl-tags">' + it.tags.join('') + '</div>' : '';
   const photo = (it.photos && it.photos.length)
     ? '<div class="tl-shots">' + shotsHtml(it.photos, it.title) + '</div>' : '';
+
+  let more = '';
+  const detail = it.detailKey && PROMO_DETAILS[it.detailKey];
+  if (detail) {
+    const detailId = 'tl-detail-' + (tlDetailSeq++);
+    const notes = (detail.notes && detail.notes.length)
+      ? '<div class="tl-detail-notes">' + detail.notes.map(function(n){ return '※' + esc(n); }).join('<br>') + '</div>'
+      : '';
+    more = '<button type="button" class="tl-more" aria-expanded="false" aria-controls="' + detailId + '">' +
+           '詳しく<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>' +
+           '<div class="tl-detail" id="' + detailId + '"><div class="tl-detail-inner">' +
+           esc(detail.body) + notes + '</div></div>';
+  }
+
   return '<div class="tl-item"' + attrs + '><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
-         '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + photo + '</div></div>';
+         '</div><div class="tl-body"><div class="tl-title">' + esc(it.title) + '</div>' + sub + tags + photo + more + '</div></div>';
+}
+
+/* 「詳しく」ボタンの開閉を有効にする（タイムライン再描画のたびに呼ぶ） */
+function initTlAccordion(){
+  document.querySelectorAll('.tl-more').forEach(function(btn){
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', function(){
+      const panel = document.getElementById(btn.getAttribute('aria-controls'));
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (!panel) return;
+      if (open) {
+        panel.classList.remove('open');
+        panel.style.maxHeight = '';
+      } else {
+        panel.classList.add('open');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      }
+    });
+  });
 }
 /* 飲食欄を来場者向けに整える。
    シートの書き方（複数行あり）:
@@ -858,11 +944,12 @@ function buildTimeline(g, events){
   if (g.start) pre.push({ t: g.start, cls: 'start', main: g.start, title: 'プレイボール！', last: true });
 
   const p = g.promos || {};
-  if (p.fureai) mid.push({ cls: 'inning', main: '試合中', title: 'ふれあいタイム' });
+  if (p.fureai) pre.push({ cls: 'time', main: '試合前', title: 'ふれあいタイム', detailKey: 'fureai' });
+  mid.push({ cls: 'always', main: '常時', title: 'NPB公式試合球をゲット！', tags: ['<span class="tl-tag kikaku">場内企画</span>'], detailKey: 'foulball' });
   if (p.kirikomi) mid.push({ cls: 'inning', main: '試合中', title: '切り込みアナウンサー' });
-  if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'プレゼント企画' });
-  if (p.kuji100) mid.push({ cls: 'always', main: '6回裏', small: 'まで', title: '100円くじ販売', tags: ['<span class="tl-tag kikaku">場内企画</span>'] });
-  if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画' });
+  if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'プレゼント企画', detailKey: 'present' });
+  if (p.kuji100) mid.push({ cls: 'always', main: '6回裏', small: 'まで', title: '100円くじ販売', tags: ['<span class="tl-tag kikaku">場内企画</span>'], detailKey: 'kuji100' });
+  if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画', detailKey: 'kattara' });
   if (p.miokuri) post.push({ cls: 'after', main: '試合後', title: '選手のお見送り', sub: '※ビジターチームの移動時間により短縮または一部選手のみとなる場合があります' });
 
   pre.sort(function(a, b){
@@ -883,6 +970,7 @@ function buildTimeline(g, events){
   });
   document.getElementById('tl').innerHTML = html;
   document.querySelectorAll('#tl .shots').forEach(initShots);
+  initTlAccordion();
 }
 
 let lastGame = null, lastDate = null, nowMarkerTimer = null;
