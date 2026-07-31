@@ -919,7 +919,7 @@ function placeTag(p){ return '<span class="tl-tag place"><svg><use href="#ic-pin
 
 function buildTimeline(g, events){
   const pre = [], mid = [], post = [];
-  if (g.openFanclub1) pre.push({ t: g.openFanclub1, cls: 'time', main: g.openFanclub1, title: '後援会先行入場', sub: '対象：オレンジダイヤモンド＆ダイヤモンド会員' });
+  if (g.openFanclub1) pre.push({ t: g.openFanclub1, cls: 'time', main: g.openFanclub1, title: '後援会先行入場', sub: 'オレンジダイヤモンド＆ダイヤモンド会員' });
   if (g.ticketSaleStart) pre.push({ t: g.ticketSaleStart, cls: 'time', main: g.ticketSaleStart, title: 'チケット販売開始', sub: g.ticketPrice });
   if (g.openFanclub2) {
     pre.push({ t: g.openFanclub2, cls: 'time', main: g.openFanclub2, title: '後援会先行入場' });
