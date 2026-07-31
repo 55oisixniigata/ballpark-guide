@@ -1,28 +1,28 @@
 {
- "updated": "2026-07-31T13:40:41+09:00",
- "date": "7/31",
+ "updated": "2026-08-01T00:04:18+09:00",
+ "date": "8/1",
  "game": {
-  "dateLabel": "2026年7月31日（金）",
-  "crown": "",
+  "dateLabel": "2026年8月1日（土）",
+  "crown": "ナミックスサンクスデー",
   "opponent": "北海道日本ハムファイターズ",
   "venue": "エコスタ",
   "venueRaw": "HARD OFF ECOスタジアム新潟",
-  "weather": "雨時々曇／28°・25°／風速3m/s",
-  "start": "18:00",
-  "ticketSaleStart": "15:45",
-  "openFanclub1": "15:00",
-  "openFanclub2": "16:00",
-  "openGeneral": "16:30",
-  "parking": "P2、3",
-  "shuttleBus": "21:00頃出発",
+  "weather": "雨のち曇／30°・25°／風速5m/s　※熱中症注意",
+  "start": "15:00",
+  "ticketSaleStart": "12:45",
+  "openFanclub1": "12:00",
+  "openFanclub2": "13:00",
+  "openGeneral": "13:30",
+  "parking": "P2、3、4 1/4",
+  "shuttleBus": "試合30分後出発",
   "smoking": "入場階段向かい側",
-  "ticketPrice": "平日価格（大人1,200円／子供500円）",
-  "goods": "CAPtainDUCK「ダッくじ」・NEW ERA®コラボキャップ「ブラウン×イエロー」キャップ・サファリハット・メッシュキャップ新発売",
-  "food": "【1塁側】1R：オイスタ／3R：焼きそば大野\n【3塁側】1L：角上魚類\n後援会イベント",
-  "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者",
+  "ticketPrice": "土日祝価格（大人1,700円／子供500円）\n先着3,000名　ナミー＆アルファくんコラボクーラーバッグ配布",
+  "goods": "亀田縞グッズ販売　※8/1.2特別販売価格\nCAPtainDUCK「ダッくじ」・NEW ERA®コラボキャップ「ブラウン×イエロー」キャップ・サファリハット・メッシュキャップ新発売",
+  "food": "【1塁側】1R：オイスタ／2R：BBQ協会／3R：焼きそば大野\n【3塁側】1L：角上魚類\nオイスタで藤五郎梅ご飯販売",
+  "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n追加：5回裏投げ込みカラーボール80個→球団グッズ\n募集：ティラノレース参加者",
   "alphaKun": true,
   "promos": {
-   "fureai": false,
+   "fureai": true,
    "kirikomi": false,
    "present": true,
    "kuji100": true,
@@ -31,69 +31,7 @@
    "groundwalk": true
   },
   "notice": "",
-  "photos": {
-   "pickup": [
-    "images/0731_pickup.jpg"
-   ],
-   "goods": [
-    "images/0731_goods1.jpg",
-    "images/0731_goods2.jpg",
-    "images/0731_goods3.jpg",
-    "images/0731_goods4.jpg"
-   ],
-   "food": [
-    "images/0731_food.png"
-   ]
-  }
+  "photos": {}
  },
- "events": [
-  {
-   "title": "東区ゆるキャラ ぬたりん出演",
-   "place": "入場口・グラウンド",
-   "time": "",
-   "phase": "常時"
-  },
-  {
-   "title": "宝くじ販売",
-   "place": "コンコース",
-   "time": "",
-   "phase": "常時"
-  },
-  {
-   "title": "SOSHI トークショー",
-   "place": "グラウンド",
-   "time": "17:25～30",
-   "phase": "試合前"
-  },
-  {
-   "title": "SOSHI 始球式",
-   "place": "グラウンド",
-   "time": "17:57",
-   "phase": "試合前"
-  },
-  {
-   "title": "Dance School Lydia　ダンス",
-   "place": "グラウンド",
-   "time": "17:30～35",
-   "phase": "試合前"
-  },
-  {
-   "title": "ハーラウフラカ・ライエ　フラダンス",
-   "place": "入場口",
-   "time": "16:00～45",
-   "phase": "試合前"
-  },
-  {
-   "title": "万代太鼓若藤会 太鼓演舞",
-   "place": "入場口",
-   "time": "16:45～17:25",
-   "phase": "試合前"
-  },
-  {
-   "title": "東区オープンファクトリーPRブース（特製ガチャ）",
-   "place": "コンコース",
-   "time": "",
-   "phase": "常時"
-  }
- ]
+ "events": []
 }
