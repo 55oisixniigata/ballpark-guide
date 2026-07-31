@@ -805,9 +805,15 @@ const PROMO_DETAILS = {
       '通路を走る、ふさぐ、自席を離れてボールを拾うなど迷惑行為が見られた場合にはスタッフにて注意させていただく場合がございます',
     ],
   },
+  ballcatch2: {
+    body: '2回表終了後、スタッフが景品名が書かれたボールをスタンドへ打ち込みます！ボールをキャッチされた方は、試合終了までに総合案内所にお越しください！',
+  },
+  aiwakatsu: {
+    body: '勝利を願おう！アルファくんと一緒にフラッグを振ろう！',
+    notes: ['フラッグは各自で事前にご準備ください'],
+  },
   present: {
-    body: '5回裏終了後には、プレゼント企画を実施。新潟にちなんだ素敵な景品を多数ご用意しています。',
-    notes: ['引き換え：総合案内所'],
+    body: '5回裏終了後、景品名が書かれたボールを投げ込みます！ボールをキャッチされた方は、試合終了までに総合案内所にお越しください！',
   },
   kattara: {
     body: '勝利時はヒーローインタビューの後に、当日使用した公式試合球が3名様に当たる「勝ったら企画」の抽選会を実施します。',
@@ -832,15 +838,22 @@ function itemHtml(it, phaseKey){
 
   let more = '';
   const detail = it.detailKey && PROMO_DETAILS[it.detailKey];
-  if (detail) {
+  const extraLines = it.extraNote
+    ? String(it.extraNote).split(/\r?\n/).map(function(l){ return l.trim(); }).filter(function(l){ return l; })
+    : [];
+  if (detail || extraLines.length) {
     const detailId = 'tl-detail-' + (tlDetailSeq++);
-    const notes = (detail.notes && detail.notes.length)
+    const bodyHtml = detail ? esc(detail.body) : '';
+    const notes = (detail && detail.notes && detail.notes.length)
       ? '<div class="tl-detail-notes">' + detail.notes.map(function(n){ return '※' + esc(n); }).join('<br>') + '</div>'
+      : '';
+    const extraHtml = extraLines.length
+      ? '<div class="tl-detail-notes">' + extraLines.map(esc).join('<br>') + '</div>'
       : '';
     more = '<button type="button" class="tl-more" aria-expanded="false" aria-controls="' + detailId + '">' +
            '詳しく<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>' +
            '<div class="tl-detail" id="' + detailId + '"><div class="tl-detail-inner">' +
-           esc(detail.body) + notes + '</div></div>';
+           bodyHtml + notes + extraHtml + '</div></div>';
   }
 
   return '<div class="tl-item"' + attrs + '><div class="tl-chip ' + it.cls + '">' + esc(it.main) + small +
@@ -944,11 +957,15 @@ function buildTimeline(g, events){
   const p = g.promos || {};
   if (p.fureai) pre.push({ cls: 'time', main: '試合前', title: 'ふれあいタイム', detailKey: 'fureai' });
   mid.push({ cls: 'always', main: '常時', title: 'NPB公式試合球をゲット！', detailKey: 'foulball' });
+  mid.push({ cls: 'inning', main: '2回表', small: '終了後', title: '景品プレゼント（ボールキャッチ）', detailKey: 'ballcatch2' });
+  mid.push({ cls: 'inning', main: '3回表', small: '終了後', title: '回せ！タオルタイム' });
+  mid.push({ cls: 'inning', main: '4回表', small: '終了後', title: '「愛は勝つ」タイム', detailKey: 'aiwakatsu' });
   if (p.kirikomi) mid.push({ cls: 'inning', main: '試合中', title: '切り込みアナウンサー' });
-  if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'プレゼント企画', detailKey: 'present' });
+  if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'プレゼント企画', detailKey: 'present', extraNote: g.infoDesk });
   if (p.kuji100) mid.push({ cls: 'always', main: '6回', small: '終了まで', title: '100円くじ販売', detailKey: 'kuji100' });
   if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画', detailKey: 'kattara' });
   if (p.miokuri) post.push({ cls: 'after', main: '試合後', title: '選手のお見送り', sub: '※ビジターチームの移動時間により短縮または一部選手のみとなる場合があります' });
+  if (p.groundwalk) post.push({ cls: 'after', main: '試合後', title: 'グラウンドウォーク' });
 
   pre.sort(function(a, b){
     if (a.last) return 1;
