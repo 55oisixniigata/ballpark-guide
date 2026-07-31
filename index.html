@@ -824,6 +824,10 @@ const PROMO_DETAILS = {
     body: '選手が昨年実際に着用したユニフォームがあたる100円くじを開催中。100円で抽選券1枚と引き換えができ、さらに選手カード1枚をお渡しします。',
     notes: ['開催場所：総合案内所', '受付時間：6回終了まで', '抽選発表：試合終了後'],
   },
+  groundwalk: {
+    body: '勝ち負けにかかわらず、熱戦が繰り広げられた直後のグラウンドに降りて楽しもう！',
+    notes: ['参加方法：試合終了後ライトゲートにお集まりください'],
+  },
 };
 
 let tlDetailSeq = 0;
@@ -983,7 +987,7 @@ function buildTimeline(g, events){
   if (p.kuji100) mid.push({ cls: 'always', main: '6回', small: '終了まで', title: '100円くじ販売', detailKey: 'kuji100' });
   if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画', detailKey: 'kattara' });
   if (p.miokuri) post.push({ cls: 'after', main: '試合後', title: '選手のお見送り', sub: '※ビジターチームの移動時間により短縮または一部選手のみとなる場合があります' });
-  if (p.groundwalk) post.push({ cls: 'after', main: '試合後', title: 'グラウンドウォーク' });
+  if (p.groundwalk) post.push({ cls: 'after', main: '試合後', title: 'グラウンドウォーク', detailKey: 'groundwalk' });
 
   pre.sort(function(a, b){
     if (a.last) return 1;
