@@ -831,6 +831,10 @@ const PROMO_DETAILS = {
   miokuri: {
     body: '「お見送り」とは、ホームゲームの試合終了後、監督・コーチ・選手・マスコットキャラクターが球場出口等でファンを直接見送りながら交流するファンサービスイベントです。',
   },
+  kirikomi: {
+    body: 'ホームゲームでファンが1回裏の先頭バッターのスタメンアナウンスに挑戦できる一般参加型の企画です。抽選で選ばれた方が、オイシックス新潟アルビレックスBCの先頭打者の名前などを自分の声で力強くコールする、球場アナウンス体験ができます。',
+    notes: ['参加方法：試合当日に球場の総合案内所等で参加者を募集し、抽選で選出'],
+  },
 };
 
 let tlDetailSeq = 0;
@@ -985,7 +989,7 @@ function buildTimeline(g, events){
   mid.push({ cls: 'inning', main: '2回表', small: '終了後', title: '越後製菓提供 お餅タイム', detailKey: 'ballcatch2' });
   mid.push({ cls: 'inning', main: '3回表', small: '終了後', title: '回せ！タオルタイム', sub: 'みんなで音に合わせてタオルを回そう！' });
   mid.push({ cls: 'inning', main: '4回表', small: '終了後', title: '「愛は勝つ」タイム', sub: '一緒にフラッグを振ろう！' });
-  if (p.kirikomi) mid.push({ cls: 'inning', main: '試合中', title: '切り込みアナウンサー' });
+  if (p.kirikomi) mid.push({ cls: 'inning', main: '試合中', title: '切り込みアナウンサー', detailKey: 'kirikomi' });
   if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'ティラノレースとプレゼント企画', detailKey: 'present' });
   if (p.kuji100) mid.push({ cls: 'always', main: '6回', small: '終了まで', title: '100円くじ販売', detailKey: 'kuji100' });
   if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画', detailKey: 'kattara' });
