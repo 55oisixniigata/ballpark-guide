@@ -986,7 +986,7 @@ function buildTimeline(g, events){
   if (p.present) mid.push({ cls: 'inning', main: '5回裏', small: '終了後', title: 'ティラノレースとプレゼント企画', detailKey: 'present' });
   if (p.kuji100) mid.push({ cls: 'always', main: '6回', small: '終了まで', title: '100円くじ販売', detailKey: 'kuji100' });
   if (p.kattara) post.push({ cls: 'after', main: '勝利時', title: '勝ったら企画', detailKey: 'kattara' });
-  if (p.miokuri) post.push({ cls: 'after', main: '試合後', title: '選手のお見送り', sub: '※ビジターチームの移動時間により短縮または一部選手のみとなる場合があります' });
+  if (p.miokuri) post.push({ cls: 'after', main: '試合後', title: '選手のお見送り' });
   if (p.groundwalk) post.push({ cls: 'after', main: '試合後', title: 'グラウンドウォーク', detailKey: 'groundwalk' });
 
   pre.sort(function(a, b){
