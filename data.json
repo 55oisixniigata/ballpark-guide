@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-01T11:02:06+09:00",
+ "updated": "2026-08-01T13:04:17+09:00",
  "date": "8/1",
  "game": {
   "dateLabel": "2026年8月1日（土）",
@@ -31,7 +31,17 @@
    "groundwalk": false
   },
   "notice": "",
-  "photos": {}
+  "photos": {
+   "goods": [
+    "images/0801_goods1.jpg",
+    "images/0801_goods2.jpg",
+    "images/0801_goods3.jpg",
+    "images/0801_goods4.jpg"
+   ],
+   "food": [
+    "images/0801_food.png"
+   ]
+  }
  },
  "events": []
 }
