@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-01T13:04:17+09:00",
+ "updated": "2026-08-01T14:27:43+09:00",
  "date": "8/1",
  "game": {
   "dateLabel": "2026年8月1日（土）",
@@ -32,6 +32,9 @@
   },
   "notice": "",
   "photos": {
+   "pickup": [
+    "images/0801_pickup.jpg"
+   ],
    "goods": [
     "images/0801_goods1.jpg",
     "images/0801_goods2.jpg",
