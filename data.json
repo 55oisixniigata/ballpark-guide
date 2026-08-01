@@ -1,25 +1,25 @@
 {
- "updated": "2026-08-01T14:27:43+09:00",
- "date": "8/1",
+ "updated": "2026-08-02T00:04:17+09:00",
+ "date": "8/2",
  "game": {
-  "dateLabel": "2026年8月1日（土）",
-  "crown": "ナミックスサンクスデー",
+  "dateLabel": "2026年8月2日（日）",
+  "crown": "弥彦競輪プレゼンツゲーム",
   "opponent": "北海道日本ハムファイターズ",
   "venue": "エコスタ",
   "venueRaw": "HARD OFF ECOスタジアム新潟",
-  "weather": "雨のち曇／30°・25°／風速5m/s　※熱中症注意",
-  "start": "15:00",
-  "ticketSaleStart": "12:45",
-  "openFanclub1": "12:00",
-  "openFanclub2": "13:00",
-  "openGeneral": "13:30",
-  "parking": "P2、3、4 1/4",
+  "weather": "曇時々晴／31°・26°／風速4m/s　※熱中症注意",
+  "start": "12:00",
+  "ticketSaleStart": "9:45",
+  "openFanclub1": "9:00",
+  "openFanclub2": "10:00",
+  "openGeneral": "10:30",
+  "parking": "P2、3",
   "shuttleBus": "試合30分後出発",
   "smoking": "入場階段向かい側",
-  "ticketPrice": "土日祝価格（大人1,700円／子供500円）\n先着3,000名　ナミー＆アルファくんコラボクーラーバッグ配布",
+  "ticketPrice": "土日祝価格（大人1,700円／子供500円）\n先着1,000名　限定うちわ配布",
   "goods": "亀田縞グッズ販売　※8/1.2特別販売価格\nCAPtainDUCK「ダッくじ」・NEW ERA®コラボキャップ「ブラウン×イエロー」キャップ・サファリハット・メッシュキャップ新発売",
-  "food": "【1塁側】1R：オイスタ／2R：BBQ協会／3R：焼きそば大野\n【3塁側】1L：角上魚類\nオイスタで藤五郎梅ご飯販売",
-  "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n追加：5回裏投げ込みカラーボール80個→球団グッズ\n募集：ティラノレース参加者",
+  "food": "【1塁側】1R：オイスタ／2R：BBQ協会\n【3塁側】1L：角上魚類\n後援会イベント",
+  "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者",
   "alphaKun": true,
   "promos": {
    "fureai": true,
@@ -27,24 +27,11 @@
    "present": true,
    "kuji100": true,
    "kattara": true,
-   "miokuri": true,
-   "groundwalk": false
+   "miokuri": false,
+   "groundwalk": true
   },
   "notice": "",
-  "photos": {
-   "pickup": [
-    "images/0801_pickup.jpg"
-   ],
-   "goods": [
-    "images/0801_goods1.jpg",
-    "images/0801_goods2.jpg",
-    "images/0801_goods3.jpg",
-    "images/0801_goods4.jpg"
-   ],
-   "food": [
-    "images/0801_food.png"
-   ]
-  }
+  "photos": {}
  },
  "events": []
 }
