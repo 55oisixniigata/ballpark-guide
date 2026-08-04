@@ -1,28 +1,28 @@
 {
- "updated": "2026-08-02T11:04:17+09:00",
- "date": "8/2",
+ "updated": "2026-08-04T18:30:35+09:00",
+ "date": "8/7",
  "game": {
-  "dateLabel": "2026年8月2日（日）",
-  "crown": "弥彦競輪プレゼンツゲーム",
+  "dateLabel": "2026年7月31日（金）",
+  "crown": "",
   "opponent": "北海道日本ハムファイターズ",
   "venue": "エコスタ",
   "venueRaw": "HARD OFF ECOスタジアム新潟",
-  "weather": "曇時々晴／31°・26°／風速4m/s　※熱中症注意",
-  "start": "12:00",
-  "ticketSaleStart": "9:45",
-  "openFanclub1": "9:00",
-  "openFanclub2": "10:00",
-  "openGeneral": "10:30",
+  "weather": "雨時々曇／28°・25°／風速3m/s",
+  "start": "18:00",
+  "ticketSaleStart": "15:45",
+  "openFanclub1": "15:00",
+  "openFanclub2": "16:00",
+  "openGeneral": "16:30",
   "parking": "P2、3",
-  "shuttleBus": "試合30分後出発",
+  "shuttleBus": "21:00頃出発",
   "smoking": "入場階段向かい側",
-  "ticketPrice": "土日祝価格（大人1,700円／子供500円）\n先着1,000名　限定うちわ配布",
-  "goods": "亀田縞グッズ販売　※8/1.2特別販売価格\nCAPtainDUCK「ダッくじ」・NEW ERA®コラボキャップ「ブラウン×イエロー」キャップ・サファリハット・メッシュキャップ新発売",
-  "food": "【1塁側】1R：オイスタ／2R：BBQ協会\n【3塁側】1L：角上魚類\n後援会イベント",
+  "ticketPrice": "平日価格（大人1,200円／子供500円）",
+  "goods": "CAPtainDUCK「ダッくじ」・NEW ERA®コラボキャップ「ブラウン×イエロー」キャップ・サファリハット・メッシュキャップ新発売",
+  "food": "【1塁側】1R：オイスタ／3R：焼きそば大野\n【3塁側】1L：角上魚類\n後援会イベント",
   "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者",
   "alphaKun": true,
   "promos": {
-   "fureai": true,
+   "fureai": false,
    "kirikomi": false,
    "present": true,
    "kuji100": true,
@@ -31,20 +31,7 @@
    "groundwalk": true
   },
   "notice": "",
-  "photos": {
-   "pickup": [
-    "images/0802_pickup"
-   ],
-   "goods": [
-    "images/0802_goods1.jpg",
-    "images/0802_goods2.jpg",
-    "images/0802_goods3.jpg",
-    "images/0802_goods4.jpg"
-   ],
-   "food": [
-    "images/0802_food.png"
-   ]
-  }
+  "photos": {}
  },
  "events": []
 }
