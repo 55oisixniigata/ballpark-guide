@@ -1,42 +1,42 @@
 {
- "updated": "2026-08-07T13:34:17+09:00",
- "date": "8/7",
+ "updated": "2026-08-08T00:04:16+09:00",
+ "date": "8/8",
  "game": {
-  "dateLabel": "2026年8月7日（金）",
-  "crown": "",
+  "dateLabel": "2026年8月8日（土）",
+  "crown": "積水ハウスグループプレゼンツゲーム",
   "opponent": "埼玉西武ライオンズ",
   "venue": "エコスタ",
   "venueRaw": "HARD OFF ECOスタジアム新潟",
-  "weather": "晴／33°・26°／風速4m/s　※熱中症注意",
-  "start": "18:00",
-  "ticketSaleStart": "15:45",
-  "openFanclub1": "15:00",
-  "openFanclub2": "16:00",
-  "openGeneral": "16:30",
+  "weather": "晴／32°・26°／風速4m/s　※熱中症注意",
+  "start": "16:00",
+  "ticketSaleStart": "13:45",
+  "openFanclub1": "13:00",
+  "openFanclub2": "14:00",
+  "openGeneral": "14:30",
   "parking": "P2、3",
-  "shuttleBus": "21:00頃出発",
+  "shuttleBus": "試合30分後出発",
   "smoking": "入場階段向かい側",
-  "ticketPrice": "平日価格（大人1,200円／子供500円）\nいのらぼチラシ配布",
+  "ticketPrice": "土日祝価格（大人1,700円／子供500円）\n先着3,000名様：うちわ配布",
   "goods": "ライオンズコラボグッズ発売",
-  "food": "【1塁側】1R：オイスタ／2R：焼きそば大野\n【3塁側】1L：角上魚類\n後援会イベント",
-  "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者",
+  "food": "【1塁側】1R：オイスタ／2R：焼きそば大野／3R：アルファス\n【3塁側】1L：角上魚類\n後援会イベント",
+  "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\nティラノレースなし→vs球団職員限定復活",
   "alphaKun": true,
   "promos": {
-   "fureai": false,
-   "kirikomi": false,
+   "fureai": true,
+   "kirikomi": true,
    "present": true,
    "kuji100": true,
    "kattara": true,
-   "miokuri": false,
-   "groundwalk": true
+   "miokuri": true,
+   "groundwalk": false
   },
   "notice": "",
   "photos": {
    "pickup": [
-    "images/0807_pickup"
+    "images/0808_pickup"
    ],
    "food": [
-    "images/0807_food.png"
+    "images/0808_food.png"
    ]
   }
  },
