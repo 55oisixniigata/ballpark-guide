@@ -1,28 +1,28 @@
 {
- "updated": "2026-08-09T09:49:16+09:00",
- "date": "8/9",
+ "updated": "2026-08-10T00:04:17+09:00",
+ "date": "8/11",
  "game": {
-  "dateLabel": "2026年8月9日（日）",
-  "crown": "ハードオフプレゼンツゲーム",
-  "opponent": "埼玉西武ライオンズ",
+  "dateLabel": "2026年8月11日（火）",
+  "crown": "アルファスグループサンクスデー",
+  "opponent": "ハヤテベンチャーズ静岡",
   "venue": "エコスタ",
   "venueRaw": "HARD OFF ECOスタジアム新潟",
-  "weather": "曇のち晴れ／29°・26°／風速4m/s　※熱中症注意",
-  "start": "13:00",
-  "ticketSaleStart": "10:45",
-  "openFanclub1": "10:00",
-  "openFanclub2": "11:00",
-  "openGeneral": "11:30",
+  "weather": "",
+  "start": "18:00",
+  "ticketSaleStart": "15:45",
+  "openFanclub1": "15:00",
+  "openFanclub2": "16:00",
+  "openGeneral": "16:30",
   "parking": "P2、3",
-  "shuttleBus": "試合30分後出発",
+  "shuttleBus": "21:00頃出発",
   "smoking": "入場階段向かい側",
-  "ticketPrice": "土日祝価格（大人1,700円／子供500円）\n先着2,000名様　ノベルティ配布\nカルビー様サンプリング配布",
-  "goods": "ライオンズコラボグッズ発売",
-  "food": "【1塁側】1R：オイスタ／3R：アルファス\n【3塁側】1L：角上魚類／3L：道の駅　笹川流れ\nオイスタで藤五郎梅ご飯販売",
-  "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者\n追加：カラーボール10個→HARD OFF景品（Tシャツ）",
-  "alphaKun": true,
+  "ticketPrice": "土日祝価格（大人1,700円／子供500円）",
+  "goods": "",
+  "food": "【1塁側】1R：オイスタ\n【3塁側】1L：アルファス\n後援会イベント",
+  "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者",
+  "alphaKun": false,
   "promos": {
-   "fureai": true,
+   "fureai": false,
    "kirikomi": false,
    "present": true,
    "kuji100": true,
@@ -31,15 +31,7 @@
    "groundwalk": false
   },
   "notice": "",
-  "photos": {
-   "pickup": [
-    "images/0809_pickup",
-    "images/0809_pickup2"
-   ],
-   "food": [
-    "images/0809_food.png"
-   ]
-  }
+  "photos": {}
  },
  "events": []
 }
