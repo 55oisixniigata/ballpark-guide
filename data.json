@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-10T12:35:16+09:00",
+ "updated": "2026-08-10T12:38:27+09:00",
  "date": "8/11",
  "game": {
   "dateLabel": "2026年8月11日（火）",
@@ -20,7 +20,7 @@
   "goods": "",
   "food": "【1塁側】1R：オイスタ\n【3塁側】1L：アルファス\n後援会イベント",
   "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者",
-  "alphaKun": false,
+  "alphaKun": true,
   "promos": {
    "fureai": false,
    "kirikomi": false,
