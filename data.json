@@ -1,13 +1,13 @@
 {
- "updated": "2026-08-11T15:19:17+09:00",
- "date": "8/11",
+ "updated": "2026-08-12T00:04:20+09:00",
+ "date": "8/12",
  "game": {
-  "dateLabel": "2026年8月11日（火）",
-  "crown": "アルファスグループサンクスデー",
+  "dateLabel": "2026年8月12日（水）",
+  "crown": "",
   "opponent": "ハヤテベンチャーズ静岡",
   "venue": "エコスタ",
   "venueRaw": "HARD OFF ECOスタジアム新潟",
-  "weather": "晴のち曇／28°・23°／風速9m/s　※強風注意／台風の影響あり",
+  "weather": "晴／33°・25°／風速7m/s　※熱中症・強風注意／台風の影響あり",
   "start": "18:00",
   "ticketSaleStart": "15:45",
   "openFanclub1": "15:00",
@@ -16,26 +16,22 @@
   "parking": "P2、3",
   "shuttleBus": "21:00頃出発",
   "smoking": "入場階段向かい側",
-  "ticketPrice": "土日祝価格（大人1,700円／子供500円）",
+  "ticketPrice": "平日価格（大人1,200円／子供500円）\nいのらぼチラシ配布",
   "goods": "",
-  "food": "【1塁側】1R：オイスタ\n【3塁側】1L：アルファス\n後援会イベント",
+  "food": "【1塁側】1R：オイスタ\n後援会イベント",
   "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者",
   "alphaKun": true,
   "promos": {
-   "fureai": true,
-   "kirikomi": true,
+   "fureai": false,
+   "kirikomi": false,
    "present": true,
    "kuji100": true,
    "kattara": true,
-   "miokuri": true,
-   "groundwalk": false
+   "miokuri": false,
+   "groundwalk": true
   },
   "notice": "",
-  "photos": {
-   "food": [
-    "images/0811_food"
-   ]
-  }
+  "photos": {}
  },
  "events": []
 }
