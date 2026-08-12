@@ -1,20 +1,20 @@
 {
- "updated": "2026-08-12T16:34:16+09:00",
- "date": "8/12",
+ "updated": "2026-08-13T00:04:21+09:00",
+ "date": "8/13",
  "game": {
-  "dateLabel": "2026年8月12日（水）",
+  "dateLabel": "2026年8月13日（木）",
   "crown": "",
   "opponent": "ハヤテベンチャーズ静岡",
   "venue": "エコスタ",
   "venueRaw": "HARD OFF ECOスタジアム新潟",
-  "weather": "晴／33°・25°／風速7m/s　※熱中症・強風注意／台風の影響あり",
-  "start": "18:00",
-  "ticketSaleStart": "15:45",
-  "openFanclub1": "15:00",
-  "openFanclub2": "16:00",
-  "openGeneral": "16:30",
+  "weather": "晴／34°・25°／風速4m/s　※熱中症注意",
+  "start": "13:00",
+  "ticketSaleStart": "10:45",
+  "openFanclub1": "10:00",
+  "openFanclub2": "11:00",
+  "openGeneral": "11:30",
   "parking": "P2、3",
-  "shuttleBus": "21:00頃出発",
+  "shuttleBus": "試合30分後出発",
   "smoking": "入場階段向かい側",
   "ticketPrice": "平日価格（大人1,200円／子供500円）\nいのらぼチラシ配布",
   "goods": "",
@@ -31,11 +31,7 @@
    "groundwalk": true
   },
   "notice": "",
-  "photos": {
-   "food": [
-    "images/0812_food"
-   ]
-  }
+  "photos": {}
  },
  "events": []
 }
