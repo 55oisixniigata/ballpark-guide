@@ -1,26 +1,26 @@
 {
- "updated": "2026-08-13T10:04:16+09:00",
- "date": "8/13",
+ "updated": "2026-08-14T00:04:22+09:00",
+ "date": "8/18",
  "game": {
-  "dateLabel": "2026年8月13日（木）",
-  "crown": "",
-  "opponent": "ハヤテベンチャーズ静岡",
+  "dateLabel": "2026年8月18日（火）",
+  "crown": "復興支援ゲーム",
+  "opponent": "中日ドラゴンズ",
   "venue": "エコスタ",
   "venueRaw": "HARD OFF ECOスタジアム新潟",
-  "weather": "晴／34°・25°／風速4m/s　※熱中症注意",
-  "start": "13:00",
-  "ticketSaleStart": "10:45",
-  "openFanclub1": "10:00",
-  "openFanclub2": "11:00",
-  "openGeneral": "11:30",
+  "weather": "",
+  "start": "18:00",
+  "ticketSaleStart": "15:45",
+  "openFanclub1": "15:00",
+  "openFanclub2": "16:00",
+  "openGeneral": "16:30",
   "parking": "P2、3",
-  "shuttleBus": "試合30分後出発",
+  "shuttleBus": "21:00頃出発",
   "smoking": "入場階段向かい側",
-  "ticketPrice": "平日価格（大人1,200円／子供500円）\nいのらぼチラシ配布",
-  "goods": "",
-  "food": "【1塁側】1R：オイスタ\n後援会イベント",
+  "ticketPrice": "平日価格（大人1,200円／子供500円）",
+  "goods": "ドアラコラボグッズ発売",
+  "food": "【1塁側】1R：オイスタ／2R：焼きそば大野／3R：ほっともっと\n【3塁側】1L：角上魚類\n後援会イベント",
   "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者",
-  "alphaKun": true,
+  "alphaKun": false,
   "promos": {
    "fureai": false,
    "kirikomi": false,
@@ -28,14 +28,10 @@
    "kuji100": true,
    "kattara": true,
    "miokuri": false,
-   "groundwalk": true
+   "groundwalk": false
   },
   "notice": "",
-  "photos": {
-   "food": [
-    "images/0813_food"
-   ]
-  }
+  "photos": {}
  },
  "events": []
 }
