@@ -1,13 +1,13 @@
 {
- "updated": "2026-08-18T14:04:18+09:00",
- "date": "8/18",
+ "updated": "2026-08-19T00:04:18+09:00",
+ "date": "8/19",
  "game": {
-  "dateLabel": "2026年8月18日（火）",
+  "dateLabel": "2026年8月19日（水）",
   "crown": "復興支援ゲーム",
   "opponent": "中日ドラゴンズ",
   "venue": "エコスタ",
   "venueRaw": "HARD OFF ECOスタジアム新潟",
-  "weather": "晴／33°・25°／風速3m/s　※熱中症注意",
+  "weather": "晴／33°・26°／風速2m/s　※熱中症注意",
   "start": "18:00",
   "ticketSaleStart": "15:45",
   "openFanclub1": "15:00",
@@ -27,13 +27,13 @@
    "present": true,
    "kuji100": true,
    "kattara": true,
-   "miokuri": true,
-   "groundwalk": false
+   "miokuri": false,
+   "groundwalk": true
   },
   "notice": "",
   "photos": {
    "food": [
-    "images/0818_food.png"
+    "images/0819_food.png"
    ]
   }
  },
