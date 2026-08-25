@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-25T15:36:39+09:00",
+ "updated": "2026-08-25T15:36:44+09:00",
  "date": "8/28",
  "game": {
   "dateLabel": "2026年8月28日（金）",
@@ -20,7 +20,7 @@
   "goods": "",
   "food": "キッチンカー：オイスタ\n後援会イベント",
   "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典",
-  "alphaKun": true,
+  "alphaKun": false,
   "promos": {
    "fureai": false,
    "kirikomi": false,
