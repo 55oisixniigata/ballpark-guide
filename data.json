@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-11T09:45:40+09:00",
+ "updated": "2026-09-11T09:47:44+09:00",
  "date": "9/15",
  "game": {
   "dateLabel": "2026年9月15日（火）",
@@ -20,7 +20,7 @@
   "goods": "めじるしアクセサリー販売開始",
   "food": "【1塁側】1R：オイスタ／2R：ひとさじ／3R：ほっともっと\n【3塁側】1L：角上魚類／2L：高橋商店／3L：\nキッチンカー：タコヤキえもん",
   "infoDesk": "引き換え：2表越後製菓イベ／5裏カラーボール／後援会特典\n募集：ティラノレース参加者",
-  "alphaKun": true,
+  "alphaKun": false,
   "promos": {
    "fureai": false,
    "kirikomi": false,
@@ -28,7 +28,7 @@
    "kuji100": true,
    "kattara": true,
    "miokuri": false,
-   "groundwalk": true
+   "groundwalk": false
   },
   "notice": "",
   "photos": {}
