@@ -1,12 +1,12 @@
 {
- "updated": "2026-09-11T09:44:32+09:00",
+ "updated": "2026-09-11T09:44:44+09:00",
  "date": "9/15",
  "game": {
   "dateLabel": "2026年9月15日（火）",
   "crown": "17LIVEプレゼンツ 能登半島復興支援ゲーム",
   "opponent": "読売ジャイアンツ",
-  "venue": "",
-  "venueRaw": "",
+  "venue": "七尾城山野球場",
+  "venueRaw": "七尾城山野球場",
   "weather": "曇時々晴／28°・23°／風速5m/s",
   "start": "18:00",
   "ticketSaleStart": "15:45",
