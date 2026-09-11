@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-11T09:44:44+09:00",
+ "updated": "2026-09-11T09:44:56+09:00",
  "date": "9/15",
  "game": {
   "dateLabel": "2026年9月15日（火）",
@@ -8,11 +8,11 @@
   "venue": "七尾城山野球場",
   "venueRaw": "七尾城山野球場",
   "weather": "曇時々晴／28°・23°／風速5m/s",
-  "start": "18:00",
-  "ticketSaleStart": "15:45",
-  "openFanclub1": "15:00",
-  "openFanclub2": "16:00",
-  "openGeneral": "16:30",
+  "start": "15:00",
+  "ticketSaleStart": "12:45",
+  "openFanclub1": "12:00",
+  "openFanclub2": "13:00",
+  "openGeneral": "13:30",
   "parking": "P2、3",
   "shuttleBus": "試合30分後出発",
   "smoking": "入場階段向かい側",
