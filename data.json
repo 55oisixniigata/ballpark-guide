@@ -1,13 +1,13 @@
 {
- "updated": "2026-09-18T18:35:42+09:00",
- "date": "9/21",
+ "updated": "2026-09-22T00:04:20+09:00",
+ "date": "9/22",
  "game": {
-  "dateLabel": "2026年9月21日（月）",
-  "crown": "今泉テントプレゼンツゲーム",
+  "dateLabel": "2026年9月22日（火）",
+  "crown": "角上魚類サンクスデー",
   "opponent": "東北楽天ゴールデンイーグルス",
   "venue": "悠久山",
   "venueRaw": "長岡市悠久山野球場",
-  "weather": "雨のち曇／25℃・22℃／降水確率100%／風速3m/s",
+  "weather": "曇りのち晴／26°・20°／風速2m/s",
   "start": "13:00",
   "ticketSaleStart": "10:45",
   "openFanclub1": "10:00",
@@ -28,7 +28,7 @@
    "kuji100": true,
    "kattara": true,
    "miokuri": false,
-   "groundwalk": false
+   "groundwalk": true
   },
   "notice": "",
   "photos": {}
